@@ -145,6 +145,7 @@ function splitsys(sys::SemiExplicitIndex1DAE)
     n = size(A,1)
     n_2 = n - n_1
 
+    # TODO Why not sparse?
     Q = [I -sys.A_12/Matrix(sys.A_22);
          spzeros(n_2, n_1) I]
     Z = [I spzeros(n_1, n_2);
