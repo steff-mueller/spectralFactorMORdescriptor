@@ -1,0 +1,21 @@
+[rcl]
+run_problem = "DAE2_RCL_Random_SISO"
+reduced_orders = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+irka_tries = 5
+run_methods = [
+    "irka",
+    "sfmor(X_min)",
+    "prbt",
+]
+compute_h2_errors = true
+plot_tf = true
+dense_riccati_solver = true
+
+[irka_options]
+conv_tol = 1e-3
+max_iterations = 200
+cycle_detection_length = 2
+cycle_detection_tol = 1e-4
+s_init_start = 0
+s_init_stop = 1
+randomize_s_init = true

@@ -1,0 +1,21 @@
+[rcl]
+run_problem = "DAE1_RCL_Simple_SISO"
+reduced_orders = [2, 10, 20]
+irka_tries = 1
+run_methods = [
+    "irka",
+    "sfmor(X_min)",
+    "sfmor(X_alt)",
+    "prbt",
+]
+compute_h2_errors = true
+plot_tf = true
+dense_riccati_solver = false
+
+[irka_options]
+conv_tol = 1e-3
+max_iterations = 100
+cycle_detection_length = 2
+cycle_detection_tol = 1e-4
+s_init_start = -1
+s_init_stop = 1
