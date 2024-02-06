@@ -1,0 +1,1 @@
+# Passivity-preserving model reduction for descriptor systems via spectral factorization
