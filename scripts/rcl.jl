@@ -8,6 +8,8 @@ using spectralFactorMORdescriptor
 include("./utils.jl")
 include("./problems.jl")
 
+Makie.inline!(true)
+
 Base.@kwdef struct RCLConfiguration
     run_problem::String
     reduced_orders::Vector{Int64}
