@@ -1,33 +1,3 @@
-using MatrixEquations: lyapc
-using DescriptorSystems
-using MatrixEquations
-using SparseArrays
-using Memoize
-
-"""
-    arec_nwt(F, H, G, E;
-    conv_tol=1e-12, max_iterations=20)
-
-Newton-Kleinman method [BenS14, Algorithm 2].
-
-    FXE^T + EXF^T + EXGXE^T + H = 0
-"""
-function arec_nwt(F, H, G, E;
-    conv_tol=1e-12, max_iterations=20)
-    iter = 0
-    X = zeros(size(F))
-    err = norm(H + F*X*E' + E*X*F' + E*X*G*X*E')
-    @info "initial error: $err"
-    while err > conv_tol && iter < max_iterations
-        iter = iter + 1
-        F_i = F + E*X*G
-        X = lyapc(F_i, E, H-E*X*G*X*E')
-        err = norm(H + F*X*E' + E*X*F' + E*X*G*X*E')
-        @info "Error in iteration $iter: $err"
-    end
-    return X
-end
-
 """
     arec_lr_nwt(F, E, Q, R, P_r=I, P_l=I; 
     conv_tol=1e-12, max_iterations=20, 
@@ -83,42 +53,6 @@ function compress_lr(Z; tol=1e-02 * sqrt(size(Z, 1) * eps(Float64)))
     U, Σ = svd(Z)
     r = findlast(Σ/Σ[1] .> tol)
     return U[:,1:r]*Diagonal(Σ[1:r])
-end
-
-"""
-    pr_o_gramian(sys)
-
-Positive real observability gramian, i.e., the unique
-stabilizing solution of
-
-    A^TXE + E^TXA + (C^T-E^TXB)(D+D')^{-1}(C-B^TXE) = 0.
-
-E is assumed to be nonsingular.
-"""
-@memoize function pr_o_gramian(sys::DescriptorStateSpace)
-    (; A,E,B,C,D) = sys
-    F = A' - C'/(D+D')*B'
-    G = B/(D+D')*B'
-    H = C'/(D+D')*C
-    return arec_nwt(F, H, G, E')
-end
-
-"""
-    pr_c_gramian(sys)
-
-Positive real controllability gramian, i.e., the unique
-stabilizing solution of
-
-    AXE^T + EXA^T + (B - EXC^T) (D+D')^{-1} (B - EXC^T)^T = 0.
-
-E is assumed to be nonsingular.
-"""
-@memoize function pr_c_gramian(sys::DescriptorStateSpace)
-    (; A,E,B,C,D) = sys
-    F = A - B/(D+D')*C
-    G = C'/(D+D')*C
-    H = B/(D+D')*B'
-    return arec_nwt(F, H, G, E')
 end
 
 """

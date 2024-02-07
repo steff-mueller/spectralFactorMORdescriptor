@@ -1,9 +1,3 @@
-using SparseArrays
-using Memoize
-using DescriptorSystems: AbstractDescriptorStateSpace, DescriptorStateSpace
-
-import Base: +, -
-
 abstract type AbstractSparseDescriptorStateSpace{Tv,Ti} <: AbstractDescriptorStateSpace end
 
 function todss(sys::AbstractSparseDescriptorStateSpace)

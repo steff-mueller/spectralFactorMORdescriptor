@@ -1,5 +1,3 @@
-using DescriptorSystems
-
 function ispr(sys::AbstractDescriptorStateSpace)
     (; E, A, B, C, D) = sys
     T(s) = Matrix(C)/(s.*E-A)*B + D

@@ -1,8 +1,3 @@
-using LinearAlgebra
-using MatrixEquations: lyapc, arec
-using DescriptorSystems
-using SparseArrays
-
 function lure_cholesky(sys, X, method; compute_factors_tol=1e-12)
     (; A, E, B, C, M_0, P_r, n) = sys
     @assert method in (:together, :firstm)

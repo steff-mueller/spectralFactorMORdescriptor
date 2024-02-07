@@ -1,7 +1,3 @@
-using LinearAlgebra
-using DescriptorSystems
-using SparseArrays
-
 Base.@kwdef struct IRKAOptions
     conv_tol = 1e-3
     max_iterations = 50

@@ -1,6 +1,3 @@
-using LinearAlgebra
-using MatrixEquations: lyapc, plyapc, arec
-
 """
     lrcf(X, trunc_tol)
 

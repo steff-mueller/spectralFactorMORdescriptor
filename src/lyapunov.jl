@@ -1,5 +1,3 @@
-using SparseArrays
-
 """
     lyapc_lradi(A, E, B, P_l=I; tol=1e-12, max_iterations=150)
 

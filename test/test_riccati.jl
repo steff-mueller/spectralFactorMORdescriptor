@@ -69,11 +69,6 @@ compute_err(X) = norm(sys_i0.A'*X*sys_i0.E + sys_i0.E'*X*sys_i0.A
     + (sys_i0.C'-sys_i0.E'*X*sys_i0.B)
        /(sys_i0.D+sys_i0.D')*(sys_i0.C-sys_i0.B'*X*sys_i0.E))
 
-X = pr_o_gramian(dss(sys_i0.A, sys_i0.E, sys_i0.B, sys_i0.C, sys_i0.D))
-err = compute_err(X)
-@info "err pr_o_gramian (index 0): $err"
-@test err < 1e-12
-
 Z = pr_o_gramian_lr(sys_i0)
 err = compute_err(Z*Z')
 @info "err pr_o_gramian_lr (index 0): $err"

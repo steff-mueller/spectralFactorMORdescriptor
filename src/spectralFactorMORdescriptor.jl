@@ -1,8 +1,13 @@
 module spectralFactorMORdescriptor
 
+import Base: +, -
+using LinearAlgebra
+using SparseArrays
 using Random
 using Logging
+using Memoize
 using DescriptorSystems
+using MatrixEquations
 
 export SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
 export splitsys, todss, checkprojlure, toindex0, toindex0sm, is_valid
