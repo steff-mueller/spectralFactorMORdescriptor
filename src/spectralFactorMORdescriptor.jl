@@ -10,7 +10,8 @@ using DescriptorSystems
 using MatrixEquations
 
 export SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
-export splitsys, todss, checkprojlure, toindex0, toindex0sm, is_valid
+export splitsys, todss, toindex0, toindex0sm, tokronecker
+export checkprojlure, is_valid
 export isastable, ispr
 export lyapc_lradi
 export pr_o_gramian_lr, pr_c_gramian_lr, pr_o_gramian, pr_c_gramian

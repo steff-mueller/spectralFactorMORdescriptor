@@ -139,15 +139,14 @@ function splitsys(sys::SemiExplicitIndex1DAE)
     n = size(A,1)
     n_2 = n - n_1
 
-    # TODO Why not sparse?
-    Q = [I -sys.A_12/Matrix(sys.A_22);
-         spzeros(n_2, n_1) I]
-    Z = [I spzeros(n_1, n_2);
-         -Matrix(sys.A_22)\sys.A_21 I]
+    Q = [sparse(I, n_1, n_1) -sys.A_12/Matrix(sys.A_22);
+         spzeros(n_2, n_1) sparse(I, n_2, n_2)]
+    Z = [sparse(I, n_1, n_1) spzeros(n_1, n_2);
+         -Matrix(sys.A_22)\sys.A_21 sparse(I, n_2, n_2)]
 
-    A = sparse(Q*A*Z)
-    B = sparse(Q*B)
-    C = sparse(C*Z)
+    A = Q*A*Z
+    B = Q*B
+    C = C*Z
     i1 = 1:n_1; i2 = n_1+1:n
     return (
         SparseDescriptorStateSpace(
@@ -221,19 +220,18 @@ Transform `sys` into almost Kronecker form [AchAM2021].
 @memoize function tokronecker(sys::StaircaseDAE)
     (; A_11, A_13, A_33, A_31, A_41, A_23, A_21, A_32, A_14, A_12,
        n_1, n_2, n_3, n_4) = sys
-    # TODO Why not sparse already?
-    L_A = sparse([I spzeros(n_1, n_2) -A_13/Matrix(A_33) (-A_11 + A_13/Matrix(A_33)*A_31)/Matrix(A_41);
-        spzeros(n_2, n_1) I -A_23/Matrix(A_33) (-A_21 + A_23/Matrix(A_33)*A_31)/Matrix(A_41);
+
+    L_A = [sparse(I, n_1, n_1) spzeros(n_1, n_2) -A_13/Matrix(A_33) (-A_11 + A_13/Matrix(A_33)*A_31)/Matrix(A_41);
+        spzeros(n_2, n_1) sparse(I, n_2, n_2) -A_23/Matrix(A_33) (-A_21 + A_23/Matrix(A_33)*A_31)/Matrix(A_41);
         spzeros(n_3, n_1) spzeros(n_3, n_2) inv(Matrix(A_33)) -Matrix(A_33)\A_31/Matrix(A_41);
-        spzeros(n_4, n_1) spzeros(n_4, n_2) spzeros(n_4, n_3) -inv(Matrix(A_41))])
+        spzeros(n_4, n_1) spzeros(n_4, n_2) spzeros(n_4, n_3) -inv(Matrix(A_41))]
 
     dropzeros!(L_A)
 
-    # TODO Why not sparse already?
-    Z_A = sparse([I spzeros(n_1, n_2) spzeros(n_1, n_3) spzeros(n_1, n_4);
-        spzeros(n_2, n_1) I spzeros(n_2, n_3) spzeros(n_2, n_4);
+    Z_A = [sparse(I, n_1, n_1) spzeros(n_1, n_2) spzeros(n_1, n_3) spzeros(n_1, n_4);
+        spzeros(n_2, n_1) sparse(I, n_2, n_2) spzeros(n_2, n_3) spzeros(n_2, n_4);
         spzeros(n_3, n_1) -Matrix(A_33)\A_32 I spzeros(n_3, n_4);
-        spzeros(n_4, n_1) Matrix(A_14)\(-A_12 + A_13/Matrix(A_33)*A_32) spzeros(n_4, n_3) inv(Matrix(A_14))])
+        spzeros(n_4, n_1) Matrix(A_14)\(-A_12 + A_13/Matrix(A_33)*A_32) spzeros(n_4, n_3) inv(Matrix(A_14))]
 
     return AlmostKroneckerDAE(
         E = dropzeros(L_A*sys.E*Z_A),
