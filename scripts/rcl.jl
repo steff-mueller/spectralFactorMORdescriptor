@@ -3,7 +3,7 @@ using Logging
 using Dates
 using LinearAlgebra
 using SparseArrays
-using spectralFactorMORdescriptor
+using SpectralFactorMOR
 
 include("../src/utils.jl")
 include("../src/problems.jl")

@@ -2,7 +2,7 @@
 
 julia_version = "1.10.0"
 manifest_format = "2.0"
-project_hash = "7c78a7a51bbc66e86eb812da62d53bccdb118f81"
+project_hash = "d496de8b27b1309c3344fac7b17980ea26f8a775"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1482,7 +1482,7 @@ weakdeps = ["ChainRulesCore"]
     SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
 
 [[deps.SpectralFactorMOR]]
-deps = ["DescriptorSystems", "LinearAlgebra", "Logging", "LoggingExtras", "MatrixEquations", "MatrixPencils", "Memoize", "Random", "SparseArrays"]
+deps = ["DescriptorSystems", "LinearAlgebra", "Logging", "MatrixEquations", "Memoize", "Random", "SparseArrays"]
 path = "src/SpectralFactorMOR"
 uuid = "85fe4cf1-3d06-4087-b459-474009f4cd9d"
 version = "0.1.0"
