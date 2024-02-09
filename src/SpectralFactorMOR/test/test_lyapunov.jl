@@ -3,7 +3,7 @@ using PortHamiltonianBenchmarkSystems
 using LinearAlgebra
 using SparseArrays
 using DescriptorSystems
-using spectralFactorMORdescriptor
+using SpectralFactorMOR
 
 E, J, R, Q, G = setup_DAE1_RCL_LadderNetwork_sparse()
 

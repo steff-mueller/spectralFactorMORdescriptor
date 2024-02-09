@@ -5,8 +5,8 @@ using LinearAlgebra
 using SparseArrays
 using spectralFactorMORdescriptor
 
-include("./utils.jl")
-include("./problems.jl")
+include("../src/utils.jl")
+include("../src/problems.jl")
 
 Makie.inline!(true)
 

@@ -1,4 +1,6 @@
 using Test
+using Pkg
+Pkg.add(url="https://github.com/Algopaul/PortHamiltonianBenchmarkSystems.jl/")
 
 @testset "spectralFactorMORdescriptor" begin
     include("./test_irka.jl")

@@ -3,7 +3,7 @@ using PortHamiltonianBenchmarkSystems
 using LinearAlgebra
 using SparseArrays
 using DescriptorSystems
-using spectralFactorMORdescriptor
+using SpectralFactorMOR
 
 function riccati_test_setup_DAE1_RCL(m)
     E, J, R, Q, G = setup_DAE1_RCL_LadderNetwork_sparse(ns=50, m=m)

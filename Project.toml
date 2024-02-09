@@ -1,29 +1,10 @@
-name = "spectralFactorMORdescriptor"
-uuid = "85fe4cf1-3d06-4087-b459-474009f4cd9d"
-authors = ["Steffen Müller <steffen.mueller@simtech.uni-stuttgart.de>"]
-version = "0.1.0"
-
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
-DescriptorSystems = "a81e2ce2-54d1-11eb-2c75-db236b00f339"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
-LoggingExtras = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 MAT = "23992714-dd62-5051-b70f-ba57cb901cac"
-MatrixEquations = "99c1a7ee-ab34-5fd5-8076-27c950a045f4"
-MatrixPencils = "48965c70-4690-11ea-1f13-43a2532b2fa8"
-Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
 PortHamiltonianBenchmarkSystems = "a30e1a9a-10b8-4bba-9e65-ab6e41f71348"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+SpectralFactorMOR = "85fe4cf1-3d06-4087-b459-474009f4cd9d"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]

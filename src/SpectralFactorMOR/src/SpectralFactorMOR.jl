@@ -1,4 +1,4 @@
-module spectralFactorMORdescriptor
+module SpectralFactorMOR
 
 import Base: +, -
 using LinearAlgebra
@@ -27,4 +27,4 @@ include("sfmor.jl")
 include("bt.jl")
 include("sys.jl")
 
-end # module spectralFactorMORdescriptor
+end # module SpectralFactorMOR

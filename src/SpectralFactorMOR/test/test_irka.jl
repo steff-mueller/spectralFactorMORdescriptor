@@ -2,7 +2,7 @@ using Test
 using PortHamiltonianBenchmarkSystems
 using LinearAlgebra
 using SparseArrays
-using spectralFactorMORdescriptor
+using SpectralFactorMOR
 
 E, J, R, Q, G = setup_DAE1_RCL_LadderNetwork_sparse(ns=3)
 A = (J-R)*Q
