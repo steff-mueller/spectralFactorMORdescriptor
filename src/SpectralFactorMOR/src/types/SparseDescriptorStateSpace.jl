@@ -1,5 +1,3 @@
-abstract type AbstractSparseDescriptorStateSpace{Tv,Ti} <: AbstractDescriptorStateSpace end
-
 struct SparseDescriptorStateSpace{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
     E::SparseMatrixCSC{Tv,Ti}
     A::SparseMatrixCSC{Tv,Ti}

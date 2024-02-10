@@ -19,7 +19,12 @@ export IRKAResult, IRKAOptions, irka, retry_irka, i0interpolate, i1interpolate
 export prbaltrunc
 export sfmor
 
-include("types.jl")
+abstract type AbstractSparseDescriptorStateSpace{Tv,Ti} <: AbstractDescriptorStateSpace end
+
+include("types/AlmostKroneckerDAE.jl")
+include("types/SemiExplicitIndex1DAE.jl")
+include("types/SparseDescriptorStateSpace.jl")
+include("types/StaircaseDAE.jl")
 include("irka.jl")
 include("lyapunov.jl")
 include("riccati.jl")
