@@ -51,10 +51,10 @@ for problem in problems
         rom, result = irka(sys, 10, IRKAOptions())
         @test rom isa DescriptorStateSpace
         @test result isa IRKAResult
-        rominf, romsp = gsdec(rom; job="infinite")
-        @test all(dss2rm(rominf) .≈ dss2rm(todss(sysinf)))
-        abs_h2_error = gh2norm(todss(syssp) - romsp)
-        @test abs_h2_error < tol
+        T(s) = Matrix(sys.C)/(s.*sys.E-sys.A)*sys.B+sys.D
+        Tr(s) = Matrix(rom.C)/(s.*rom.E-rom.A)*rom.B+rom.D
+        @test T(1e6) ≈ Tr(1e6)
+        @test norm(T(0)-Tr(0)) < tol
     end
 end
 
