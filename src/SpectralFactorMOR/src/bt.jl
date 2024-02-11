@@ -49,7 +49,7 @@ Positive real balanced truncation for descriptor systems
 The parameter `r` corresponds to the reduced order
 of the finite part of the system.
 """
-function prbaltrunc(sys::SemiExplicitIndex1DAE, r::Int, Z_prc, Z_pro)
+function prbaltrunc(sys::SemiExplicitIndex1DAE, r, Z_prc, Z_pro)
     (; E, A, B, C, M_0) = sys
 
     U, Σ, V = svd(Z_pro'*E*Z_prc)
@@ -68,7 +68,7 @@ function prbaltrunc(sys::SemiExplicitIndex1DAE, r::Int, Z_prc, Z_pro)
     return dss(Ar, Er, Br, Cr, Dr)
 end
 
-function prbaltrunc(sys::StaircaseDAE, r::Int, Z_prc, Z_pro)
+function prbaltrunc(sys::StaircaseDAE, r, Z_prc, Z_pro)
     (; E, A, B, C, M_0, M_1, m) = sys
 
     U, Σ, V = svd(Z_pro'*E*Z_prc)

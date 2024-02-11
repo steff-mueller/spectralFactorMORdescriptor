@@ -21,7 +21,7 @@ A solution to the positive real projected Lur'e equation
 can be supplied via the parameter `X`. If no `X` is supplied,
 the positive real observability Gramian is computed.
 """
-function sfmor(sys::SemiExplicitIndex1DAE, r::Int,
+function sfmor(sys::SemiExplicitIndex1DAE, r,
     irka_options::IRKAOptions; X=nothing,
     compute_factors = :together, compute_factors_tol=1e-12
 )
@@ -31,11 +31,6 @@ function sfmor(sys::SemiExplicitIndex1DAE, r::Int,
         X = Z*Z'
     end
     L, M = lure_cholesky(sys, X, compute_factors; compute_factors_tol)
-
-    LTL = -A'*X*E-E'*X*A
-    MTM = M_0+M_0'
-    MTL = C*P_r-B'*X*E
-    @info "LTM/MTM error" compute_factors norm(LTL-L'*L) norm(MTM-M'*M) norm(MTL-M'*L) size(L) size(M)
 
     Σ_H = SemiExplicitIndex1DAE(E, A, B, sparse(L), Matrix(M), n_1)
 
@@ -61,7 +56,7 @@ A solution to the positive real projected Lur'e equation
 can be supplied via the parameter `X`. If no `X` is supplied,
 the positive real observability Gramian is computed.
 """
-function sfmor(sys::StaircaseDAE, r::Int, irka_options::IRKAOptions;
+function sfmor(sys::StaircaseDAE, r, irka_options::IRKAOptions;
     X = nothing, compute_factors = :together, compute_factors_tol=1e-12
 )
     if isnothing(X)

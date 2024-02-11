@@ -125,7 +125,7 @@ end
 IRKA for index-0 systems.
 """
 function irka(
-    sys::AbstractDescriptorStateSpace, r::Int, irka_options::IRKAOptions;
+    sys::AbstractDescriptorStateSpace, r, irka_options::IRKAOptions;
     P_r=I, P_l=I, Dr=nothing
 )
     (; conv_tol, max_iterations, s_init_start, s_init_stop, randomize_s_init,
@@ -190,7 +190,7 @@ IRKA for semiexplicit index-1 DAEs.
 Gugercin, S., Stykel, T., & Wyatt, S. (2013). Model Reduction of Descriptor
 Systems by Interpolatory Projection Methods. SIAM. https://doi.org/10.1137/130906635
 """
-function irka(sys::SemiExplicitIndex1DAE, r::Int, irka_options::IRKAOptions)
+function irka(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions)
     return irka(sys, r, irka_options; Dr = sys.M_0)
 end
 
@@ -199,7 +199,7 @@ end
 
 IRKA for port-Hamiltonian DAEs in staircase form.
 """
-function irka(sys::StaircaseDAE, r::Int, irka_options::IRKAOptions)
+function irka(sys::StaircaseDAE, r, irka_options::IRKAOptions)
     (; M_0, M_1, P_r, P_l, m) = sys
     romp, result = irka(sys, r, irka_options; P_r = P_r, P_l = P_l, Dr = M_0)
 
@@ -214,7 +214,7 @@ end
 Retry IRKA `max_retries` times and pick the result with the lowest H2-error.
 `syssp` is the strictly proper subsystem of the full-order model.
 """
-function retry_irka(run, max_tries::Int64, syssp)
+function retry_irka(run, max_tries, syssp)
     Random.seed!(0)
     local return_rom
     return_irka_result = IRKAResult(
