@@ -10,7 +10,7 @@ using DescriptorSystems
 using MatrixEquations
 
 export SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
-export splitsys, todss, toindex0, toindex0sm, tokronecker
+export splitsys, todss, toindex0, tokronecker
 export checkprojlure, is_valid
 export isastable, ispr
 export lyapc_lradi

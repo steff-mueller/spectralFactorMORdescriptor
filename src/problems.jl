@@ -70,9 +70,9 @@ function get_problem(name)
         "DAE1_RCL_Simple_SISO" => () -> setup_DAE1_RCL(500, false, false),
         "DAE1_RCL_Random_SISO" => () -> setup_DAE1_RCL(500, true, false),
         "DAE0_RCL_Simple_SISO" => () ->
-            toindex0sm(setup_DAE1_RCL(500, false, false)), # index-reduced sys
+            toindex0(setup_DAE1_RCL(500, false, false)), # index-reduced sys
         "DAE0_RCL_Random_SISO" => () ->
-            toindex0sm(setup_DAE1_RCL(500, true, false)), # index-reduced sys
+            toindex0(setup_DAE1_RCL(500, true, false)), # index-reduced sys
         "DAE1_RCL_Simple_MIMO" => () -> setup_DAE1_RCL(500, false, true),
         "DAE1_RCL_Random_MIMO" => () -> setup_DAE1_RCL(500, true, true),
         "DAE2_RCL_Simple_SISO" => () -> setup_DAE2_RCL(500, false, false),

@@ -68,11 +68,6 @@ function toindex0(sys::SemiExplicitIndex1DAE)
     B_i0 = sparse(sys.B_1 - sys.A_12/Matrix(sys.A_22)*sys.B_2)
     C_i0 = sparse(sys.C_1 - sys.C_2/Matrix(sys.A_22)*sys.A_21)
     D_i0 = sys.D - sys.C_2/Matrix(sys.A_22)*sys.B_2
-    return SparseDescriptorStateSpace(E_i0, A_i0, B_i0, C_i0, D_i0, 0.0)
-end
-
-function toindex0sm(sys::SemiExplicitIndex1DAE)
-    (; E, A, B, C, D) = toindex0(sys)
-    n = size(A,1)
-    return SemiExplicitIndex1DAE(E, A, B, C, D, n)
+    n = size(E_i0, 1)
+    return SemiExplicitIndex1DAE(E_i0, A_i0, B_i0, C_i0, D_i0, n)
 end
