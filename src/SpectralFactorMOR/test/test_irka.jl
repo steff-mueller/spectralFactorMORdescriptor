@@ -1,6 +1,7 @@
 module IrkaTests
 
 using Test
+using Random
 using PortHamiltonianBenchmarkSystems
 using LinearAlgebra
 using SparseArrays
@@ -47,6 +48,7 @@ const problems = [
 for problem in problems
     testname, sys, tol = problem
     @testset "$testname" begin
+        Random.seed!(0)
         sysinf, syssp, = splitsys(sys)
         rom, result = irka(sys, 10, IRKAOptions())
         @test rom isa DescriptorStateSpace
