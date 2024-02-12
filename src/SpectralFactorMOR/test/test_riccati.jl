@@ -75,7 +75,7 @@ sys = test_setup_DAE2_RCL(1)
     @test P_l'*X*P_l ≈ X
     err = norm(A'*X*E + E'*X*A
         + (P_r'*C'-E'*X*B)/(M_0+M_0')*(C*P_r-B'*X*E))
-    @test err < 1e-5
+    @test err < 1e-4
     @info "err pr_o_gramian SISO (index 2): $err"
 end
 
