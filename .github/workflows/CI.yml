@@ -63,4 +63,4 @@ jobs:
           using Documenter: DocMeta, doctest
           using SpectralFactorMOR
           DocMeta.setdocmeta!(SpectralFactorMOR, :DocTestSetup, :(using SpectralFactorMOR); recursive=true)
-          doctest(SpectralFactorMOR)
+          doctest(SpectralFactorMOR; manual=joinpath(pwd(), "docs", "src"))
