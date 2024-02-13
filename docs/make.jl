@@ -1,7 +1,13 @@
 using SpectralFactorMOR
+using DocumenterCitations
 using Documenter
 
 DocMeta.setdocmeta!(SpectralFactorMOR, :DocTestSetup, :(using SpectralFactorMOR); recursive=true)
+
+bib = CitationBibliography(
+    joinpath(@__DIR__, "src", "refs.bib");
+    style=:numeric
+)
 
 makedocs(;
     modules=[SpectralFactorMOR],
@@ -15,7 +21,8 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "SpectralFactorMOR" => "SpectralFactorMOR.md"
-    ]
+    ],
+    plugins=[bib]
 )
 
 deploydocs(;

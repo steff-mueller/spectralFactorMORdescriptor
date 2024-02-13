@@ -6,9 +6,16 @@ CurrentModule = SpectralFactorMOR
 
 Documentation for [SpectralFactorMOR](https://github.com/steff-mueller/spectralFactorMORdescriptor/tree/main/src/SpectralFactorMOR).
 
+## API
+
 ```@index
 ```
 
 ```@autodocs
 Modules = [SpectralFactorMOR]
+```
+
+## References
+
+```@bibliography
 ```
