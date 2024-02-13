@@ -1,20 +1,29 @@
 """
-            | E_11 0 | 
-        E = |        | 
-            | 0    0 |
+Represents a system of the form
 
+```math
+E = \\begin{bmatrix}
+    E_{11} & 0\\\\
+    0 & 0
+\\end{bmatrix}, \\quad
+A = \\begin{bmatrix}
+    A_{11} & A_{12}\\\\
+    A_{21} & A_{22}
+\\end{bmatrix}
+```
 
-            | A_11 A_12 |
-        A = |           |
-            | A_21 A_22 |
+with ``E_{11}`` nonsingular. The system matrices ``B`` and ``C``
+are partitioned accordingly as
 
-            | B_1 |
-        B = |     |
-            | B_2 |
-
-        C = | C_1 C_2 |
-
-The matrix E_11 is nonsingular.
+```math
+B = \\begin{bmatrix}
+    B_1\\\\
+    B_2
+\\end{bmatrix}, \\quad
+C = \\begin{bmatrix}
+    C_1 & C_2
+\\end{bmatrix}.
+```
 """
 Base.@kwdef struct SemiExplicitIndex1DAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
     E::SparseMatrixCSC{Tv,Ti}

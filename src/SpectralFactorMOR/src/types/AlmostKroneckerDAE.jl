@@ -1,10 +1,35 @@
 """
-                |E_11    0  0 0|      | 0   0  0 I|      |B_1|
-            E = |  0   E_22 0 0|, A = | 0 A_22 0 0|, B = |B_2|, C = |C_1 C_2 C_3 C_4|
-                |  0     0  0 0|      | 0   0  I 0|      |B_3|
-                |  0     0  0 0|      |-I   0  0 0|      |B_4|
+Represents a system of the form
 
-The matrices E_11 and E_22 are nonsingular.
+```math
+E = \\begin{bmatrix}
+    E_{11} & 0      & 0 & 0\\\\
+    0      & E_{22} & 0 & 0\\\\
+    0      & 0      & 0 & 0\\\\
+    0      & 0      & 0 & 0
+\\end{bmatrix}, \\quad
+A = \\begin{bmatrix}
+    0 & 0      & 0 & I\\\\
+    0 & A_{22} & 0 & 0\\\\
+    0 & 0      & I & 0\\\\
+    -I&0&0&0
+\\end{bmatrix}
+```
+
+with ``E_{11}`` and ``E_{22}`` nonsingular. The system matrices ``B`` and ``C``
+are partitioned accordingly as
+
+```math
+B = \\begin{bmatrix}
+    B_1\\\\
+    B_2\\\\
+    B_3\\\\
+    B_4
+\\end{bmatrix}, \\quad
+C = \\begin{bmatrix}
+    C_1 & C_2 & C_3 & C_4
+\\end{bmatrix}.
+```
 """
 Base.@kwdef struct AlmostKroneckerDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
     E::SparseMatrixCSC{Tv,Ti}
@@ -34,6 +59,6 @@ Base.@kwdef struct AlmostKroneckerDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpa
     C_2 = C[:, idx_2]
     C_3 = C[:, idx_3]
     C_4 = C[:, idx_4]
-    M_0 = Matrix(C_1*B_4 - C_3*B_3 - C_4*B_1 + D) # [SchMMV23]
-    M_1 = Matrix(C_4*E_11*B_4) # [SchMMV23]
+    M_0 = Matrix(C_1*B_4 - C_3*B_3 - C_4*B_1 + D)
+    M_1 = Matrix(C_4*E_11*B_4)
 end

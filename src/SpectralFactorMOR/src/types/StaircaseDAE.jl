@@ -1,10 +1,22 @@
 """
-                |E_11    0  0 0|      |A_11 A_12 A_13 A_14|      |B_1|
-            E = |  0   E_22 0 0|, A = |A_21 A_22 A_23   0 |, B = |B_2|, C = |C_1 C_2 C_3 C_4|
-                |  0     0  0 0|      |A_31 A_32 A_33   0 |      |B_3|
-                |  0     0  0 0|      |A_41   0    0    0 |      |B_4|
+Represents a system of the form
 
-    with E_11, E_22, A_14=-A_41^T, A_33 nonsingular
+```math
+E = \\begin{bmatrix}
+    E_{11} & 0      & 0 & 0\\\\
+    0      & E_{22} & 0 & 0\\\\
+    0      & 0      & 0 & 0\\\\
+    0      & 0      & 0 & 0
+\\end{bmatrix},\\quad
+A = \\begin{bmatrix}
+    A_{11} & A_{12} & A_{13} & A_{14}\\\\
+    A_{21} & A_{22} & A_{23} & 0\\\\
+    A_{31} & A_{32} & A_{33} & 0\\\\
+    A_{41} & 0      & 0      & 0
+\\end{bmatrix}
+```
+
+with ``E_{11}, E_{22}, A_{14}=-A_{41}^T,A_{33}`` nonsingular.
 """
 Base.@kwdef struct StaircaseDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
     E::SparseMatrixCSC{Tv,Ti}
