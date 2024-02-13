@@ -76,7 +76,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Note: Uses the dense solver `MatrixEquations.garec`.
 """
-@memoize function pr_o_gramian(sys::SemiExplicitIndex1DAE)
+function pr_o_gramian(sys::SemiExplicitIndex1DAE)
     (; M_0, n, n_1, n_2) = sys
     _, syssp, Q, = splitsys(sys)
     X, = garec(Matrix(syssp.A), Matrix(syssp.E), syssp.B, 0, -M_0-M_0', 0, -syssp.C') # or other standard method
@@ -99,7 +99,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Note: Uses the dense solver `MatrixEquations.garec`.
 """
-@memoize function pr_c_gramian(sys::SemiExplicitIndex1DAE)
+function pr_c_gramian(sys::SemiExplicitIndex1DAE)
     (; M_0, n, n_1, n_2) = sys
     _, syssp, _, Z = splitsys(sys)
     X, = garec(Matrix(syssp.A'), Matrix(syssp.E'), syssp.C', 0, -M_0-M_0', 0, -syssp.B) # or other standard method
@@ -122,7 +122,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Note: Uses the dense solver `MatrixEquations.garec`.
 """
-@memoize function pr_o_gramian(sys::StaircaseDAE)
+function pr_o_gramian(sys::StaircaseDAE)
     sys_kronecker, L_A, = tokronecker(sys)
     (; E_22, A_22, B_2, C_2, M_0, n, n_1, n_2, n_3, n_4) = sys_kronecker
     X, = garec(Matrix(A_22), Matrix(E_22), B_2, 0, -M_0-M_0', 0, -C_2') # or other standard method
@@ -147,7 +147,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Note: Uses the dense solver `MatrixEquations.garec`.
 """
-@memoize function pr_c_gramian(sys::StaircaseDAE)
+function pr_c_gramian(sys::StaircaseDAE)
     sys_kronecker, _, Z_A = tokronecker(sys)
     (; E_22, A_22, B_2, C_2, M_0, n, n_1, n_2, n_3, n_4) = sys_kronecker
     X, = garec(Matrix(A_22'), Matrix(E_22'), C_2', 0, -M_0-M_0', 0, -B_2) # or other standard method
@@ -172,7 +172,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 """
-@memoize function pr_o_gramian_lr(sys::SemiExplicitIndex1DAE)
+function pr_o_gramian_lr(sys::SemiExplicitIndex1DAE)
     (; A, E, B, C, M_0, P_r, P_l) = sys
     M = cholesky(Symmetric(M_0+M_0'))
     F = A' - P_r'*C'/(M_0+M_0')*B'
@@ -196,7 +196,7 @@ where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
 Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 """
-@memoize function pr_c_gramian_lr(sys::SemiExplicitIndex1DAE)
+function pr_c_gramian_lr(sys::SemiExplicitIndex1DAE)
     (; A, E, B, C, M_0, P_r, P_l) = sys
     M = cholesky(Symmetric(M_0+M_0'))
     F = A - P_l*B/(M_0+M_0')*C
