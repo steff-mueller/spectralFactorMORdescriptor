@@ -30,10 +30,11 @@ function truncation(d, L, trunc_tol)
 end
 
 """
-    compress_lr(Z)
+    compress_lr(Z, r::Int)
 
-Compress `Z` via SVD such that it holds
-        Z*Z' ≈ Z_new*Z_new'.
+Compresses ``Z`` via SVD such that it holds
+``Z Z^T ≈ Z_\\mathrm{new} Z_\\mathrm{new}^T``,
+where ``Z_\\mathrm{new}`` is the returned matrix.
 """
 function compress_lr(Z, r::Int)
     U, Σ = svd(Z)

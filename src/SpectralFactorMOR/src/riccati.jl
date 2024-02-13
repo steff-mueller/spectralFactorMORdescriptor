@@ -1,16 +1,21 @@
 """
-    arec_lr_nwt(F, E, Q, R, P_r=I, P_l=I; 
-    conv_tol=1e-12, max_iterations=20, 
-    lyapc_lradi_tol=1e-12, lyapc_lradi_max_iterations=150)
+    arec_lr_nwt(
+        F, E, Q, R, P_r=I, P_l=I; 
+        conv_tol=1e-12, max_iterations=20, 
+        lyapc_lradi_tol=1e-12, lyapc_lradi_max_iterations=150
+    )
 
-Low-rank Newton method [DAE_Forum_IV, Algorithm 9].
+Solves the Riccati equation
 
-    FXE^T + EXF^T + EXQ^TQXE^T + P_l RR^T P_l^T = 0,
-    X = P_r X P_r^T.
+```math
+FXE^T + EXF^T + EXQ^TQXE^T + P_l RR^T P_l^T = 0,\\quad
+X = P_r X P_r^T.
+```
 
-Returns an approximate solution Z such that
+using the low-rank Newton method.
+Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 
-    X ≈ Z*Z'.
+See [DAE_Forum_IV_mor; Alg. 9](@cite).
 """
 function arec_lr_nwt(F, E, Q, R, P_r=I, P_l=I; 
     conv_tol=1e-9, max_iterations=20, 
@@ -44,10 +49,11 @@ function arec_lr_nwt(F, E, Q, R, P_r=I, P_l=I;
 end
 
 """
-    compress_lr(Z)
+    compress_lr(Z; tol=1e-02 * sqrt(size(Z, 1) * eps(Float64)))
 
-Compress `Z` via SVD such that it holds
-        Z*Z' ≈ Z_new*Z_new'.
+Compresses ``Z`` via SVD such that it holds
+``Z Z^T ≈ Z_\\mathrm{new} Z_\\mathrm{new}^T``,
+where ``Z_\\mathrm{new}`` is the returned matrix.
 """
 function compress_lr(Z; tol=1e-02 * sqrt(size(Z, 1) * eps(Float64)))
     U, Σ = svd(Z)
@@ -56,17 +62,19 @@ function compress_lr(Z; tol=1e-02 * sqrt(size(Z, 1) * eps(Float64)))
 end
 
 """
-    pr_o_gramian(sys)
+    pr_o_gramian(sys::SemiExplicitIndex1DAE)
 
-Computes positive real observability gramian,
+Computes positive real observability Gramian,
 i.e., the unique stabilizing solution of
 
-    A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,
-    X = P_l^T Y P_l,
+```math
+A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,\\quad
+X = P_l^T Y P_l,
+```
 
-where P_r, P_l and M_0 are defined by the given system.
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-Note: Uses `MatrixEquations.garec`.
+Note: Uses the dense solver `MatrixEquations.garec`.
 """
 @memoize function pr_o_gramian(sys::SemiExplicitIndex1DAE)
     (; M_0, n, n_1, n_2) = sys
@@ -77,17 +85,19 @@ Note: Uses `MatrixEquations.garec`.
 end
 
 """
-    pr_c_gramian(sys)
+    pr_c_gramian(sys::SemiExplicitIndex1DAE)
 
-Computes the positive real observability gramian,
+Computes the positive real controllability Gramian,
 i.e., the unique stabilizing solution of
 
-    AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,
-    X = P_r X P_r^T,
+```math
+AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,\\quad
+X = P_r X P_r^T,
+```
 
-where P_r, P_l and M_0 are defined by the given system.
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-Note: Uses `MatrixEquations.garec`.
+Note: Uses the dense solver `MatrixEquations.garec`.
 """
 @memoize function pr_c_gramian(sys::SemiExplicitIndex1DAE)
     (; M_0, n, n_1, n_2) = sys
@@ -98,17 +108,19 @@ Note: Uses `MatrixEquations.garec`.
 end
 
 """
-    pr_o_gramian(sys)
+    pr_o_gramian(sys::StaircaseDAE)
 
-Computes positive real observability gramian,
+Computes positive real observability Gramian,
 i.e., the unique stabilizing solution of
 
-    A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,
-    X = P_l^T Y P_l,
+```math
+A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,\\quad
+X = P_l^T Y P_l,
+```
 
-where P_r, P_l and M_0 are defined by the given system.
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-Note: Uses `MatrixEquations.garec`.
+Note: Uses the dense solver `MatrixEquations.garec`.
 """
 @memoize function pr_o_gramian(sys::StaircaseDAE)
     sys_kronecker, L_A, = tokronecker(sys)
@@ -121,17 +133,19 @@ Note: Uses `MatrixEquations.garec`.
 end
 
 """
-    pr_c_gramian(sys)
+    pr_c_gramian(sys::StaircaseDAE)
 
-Computes the positive real observability gramian,
+Computes the positive real observability Gramian,
 i.e., the unique stabilizing solution of
 
-    AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,
-    X = P_r X P_r^T,
+```math
+AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,\\quad
+X = P_r X P_r^T,
+```
 
-where P_r, P_l and M_0 are defined by the given system.
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-Note: Uses `MatrixEquations.garec`.
+Note: Uses the dense solver `MatrixEquations.garec`.
 """
 @memoize function pr_c_gramian(sys::StaircaseDAE)
     sys_kronecker, _, Z_A = tokronecker(sys)
@@ -144,63 +158,19 @@ Note: Uses `MatrixEquations.garec`.
 end
 
 """
-    pr_o_gramian_lr(sys)
+    pr_o_gramian_lr(sys::SemiExplicitIndex1DAE)
 
-Computes low-rank factor of positive real observability gramian,
+Computes a low-rank factor of the positive real observability Gramian,
 i.e., the unique stabilizing solution of
 
-    A^TXE + E^TXA + (C^T-E^TXB)(D+D')^{-1}(C-B^TXE) = 0.
+```math
+A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,\\quad
+X = P_l^T Y P_l,
+```
 
-E is assumed to be nonsingular.
-Returns an approximate solution Z such that
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-    X ≈ Z*Z'.
-"""
-@memoize function pr_o_gramian_lr(sys::AbstractDescriptorStateSpace)
-    (; A,E,B,C,D) = sys
-    J = cholesky(Symmetric(D+D'))
-    F = A' - C'/(D+D')*B'
-    Q = J.L\B'
-    R = C'/J.U
-    return arec_lr_nwt(F,E,Q,R)
-end
-
-"""
-    pr_c_gramian_lr(sys)
-
-Computes low-rank factor of positive real controllability gramian,
-i.e., the unique stabilizing solution of
-
-    AXE^T + EXA^T + (B - EXC^T) (D+D')^{-1} (B - EXC^T)^T = 0
-
-E is assumed to be nonsingular.
-Returns an approximate solution Z such that
-
-    X ≈ Z*Z'.
-"""
-@memoize function pr_c_gramian_lr(sys::AbstractDescriptorStateSpace)
-    (; A,E,B,C,D) = sys
-    J = cholesky(Symmetric(D+D'))
-    F = A - B/(D+D')*C
-    Q = J.L\C
-    R = B/J.U
-    return arec_lr_nwt(F,E,Q,R)
-end
-
-"""
-    pr_o_gramian_lr(sys)
-
-Computes low-rank factor of positive real observability gramian,
-i.e., the unique stabilizing solution of
-
-    A^TXE + E^TXA + (P_r^T C^T-E^TXB)(M_0+M_0')^{-1}(C P_r-B^TXE) = 0,
-    X = P_l^T Y P_l,
-
-where P_r, P_l and M_0 are defined by the given system.
-
-Returns an approximate solution Z such that
-
-    X ≈ Z*Z'.
+Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 """
 @memoize function pr_o_gramian_lr(sys::SemiExplicitIndex1DAE)
     (; A, E, B, C, M_0, P_r, P_l) = sys
@@ -212,19 +182,19 @@ Returns an approximate solution Z such that
 end
 
 """
-    pr_c_gramian_lr(sys)
+    pr_c_gramian_lr(sys::SemiExplicitIndex1DAE)
 
-Computes low-rank factor of positive real observability gramian,
+Computes a low-rank factor of positive real controllability Gramian,
 i.e., the unique stabilizing solution of
 
-    AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,
-    X = P_r X P_r^T,
+```math
+AXE^T + EXA^T + (P_l B - EXC^T) (M_0+M_0')^{-1} (P_l B - EXC^T)^T = 0,\\quad
+X = P_r X P_r^T,
+```
 
-where P_r, P_l and M_0 are defined by the given system.
+where ``P_r``, ``P_l`` and ``M_0`` are defined by the given system `sys`.
 
-Returns an approximate solution Z such that
-
-    X ≈ Z*Z'.
+Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 """
 @memoize function pr_c_gramian_lr(sys::SemiExplicitIndex1DAE)
     (; A, E, B, C, M_0, P_r, P_l) = sys
