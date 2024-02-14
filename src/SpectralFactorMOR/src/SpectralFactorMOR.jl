@@ -13,7 +13,7 @@ export SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
 export splitsys, todss, toindex0, tokronecker
 export checkprojlure, is_valid
 export isastable, ispr
-export lyapc_lradi
+export lyapc_lradi, lrcf
 export pr_o_gramian_lr, pr_c_gramian_lr, pr_o_gramian, pr_c_gramian
 export IRKAResult, IRKAOptions, irka, retry_irka, i0interpolate, i1interpolate
 export prbaltrunc
