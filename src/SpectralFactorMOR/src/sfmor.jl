@@ -17,18 +17,24 @@ function lure_cholesky(sys, X, method; compute_factors_tol=1e-12)
 end
 
 """
+    sfmor(
+        sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions;
+        X=nothing, compute_factors = :together, compute_factors_tol=1e-12
+    )
+
+Executes the spectral factor MOR method for a semi-explicit index-1 system.
+
 A solution to the positive real projected Lur'e equation
 can be supplied via the parameter `X`. If no `X` is supplied,
-the positive real observability Gramian is computed.
+the positive real observability Gramian is computed
+using [`pr_o_gramian`](@ref).
 """
-function sfmor(sys::SemiExplicitIndex1DAE, r,
-    irka_options::IRKAOptions; X=nothing,
-    compute_factors = :together, compute_factors_tol=1e-12
+function sfmor(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions;
+    X=nothing, compute_factors = :together, compute_factors_tol=1e-12
 )
-    (; A, E, B, C, n_1, M_0, P_r) = sys
+    (; A, E, B, n_1, M_0) = sys
     if isnothing(X)
-        Z, _, _ = pr_o_gramian_lr(sys)
-        X = Z*Z'
+        X = pr_o_gramian(sys)
     end
     L, M = lure_cholesky(sys, X, compute_factors; compute_factors_tol)
 
@@ -52,9 +58,17 @@ function sfmor(sys::SemiExplicitIndex1DAE, r,
 end
 
 """
+    sfmor(
+        sys::StaircaseDAE, r, irka_options::IRKAOptions;
+        X = nothing, compute_factors = :together, compute_factors_tol=1e-12
+    )
+
+Executes the spectral factor MOR method for a system in staircase form.
+
 A solution to the positive real projected Lur'e equation
 can be supplied via the parameter `X`. If no `X` is supplied,
-the positive real observability Gramian is computed.
+the positive real observability Gramian is computed
+using [`pr_o_gramian`](@ref).
 """
 function sfmor(sys::StaircaseDAE, r, irka_options::IRKAOptions;
     X = nothing, compute_factors = :together, compute_factors_tol=1e-12

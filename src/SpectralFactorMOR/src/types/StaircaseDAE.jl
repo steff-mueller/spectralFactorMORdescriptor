@@ -51,7 +51,13 @@ Base.@kwdef struct StaircaseDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,
 end
 
 """
-Transform `sys` into almost Kronecker form [AchAM2021].
+    tokronecker(sys::StaircaseDAE)
+
+Transforms `sys` into almost Kronecker form [AchAM21; Alg. 5](@cite).
+Returns a system of type [`AlmostKroneckerDAE`](@ref).
+
+The result is cached using the
+[Memoize.jl](https://github.com/JuliaCollections/Memoize.jl) package.
 """
 @memoize function tokronecker(sys::StaircaseDAE)
     (; A_11, A_13, A_33, A_31, A_41, A_23, A_21, A_32, A_14, A_12,
@@ -111,7 +117,9 @@ Base.propertynames(sys::StaircaseDAE) =
     (:P_r, :P_l, :M_0, :M_1, fieldnames(typeof(sys))...)
 
 """
-Assert that `sys` is in valid staircase form.
+    is_valid(sys::StaircaseDAE)
+
+Asserts that `sys` is in valid staircase form.
 """
 function is_valid(sys::StaircaseDAE)
     (; E_11, E_22, A_33, A_14, A_41, n_1, n_2, n_3, n_4,

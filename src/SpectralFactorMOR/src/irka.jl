@@ -1,3 +1,18 @@
+"""
+The struct holds options for the IRKA algorithm.
+
+- The `conv_tol` option sets the convergence tolerance.
+- The `max_iterations` option sets the maximum number of iterations.
+- The `cycle_detection_length` controls how many past iterations are
+  considered for cycle detection. The `cycle_detection_tol` sets
+  the cycle detection tolerance. If `cycle_detection_tol` is zero,
+  no cycle detection is performed.
+- The `s_init_start` and `s_init_stop` control the
+  initial interpolation points. The initial interpolation points are
+  distributed logarithmically between `10^s_init_start` and `10^s_init_stop`.
+- If `randomize_s_init` is true, the initial interpolation points
+  are disturbed randomly by `randn`.
+"""
 Base.@kwdef struct IRKAOptions
     conv_tol = 1e-3
     max_iterations = 50
@@ -19,7 +34,7 @@ struct IRKAResult
     b::Matrix{ComplexF64}
 end
 
-function i0interpolate(E,A,B,C,c,b,s; P_r=I, P_l=I)
+function i0interpolate(E, A, B, C, c, b, s; P_r=I, P_l=I)
     n = size(A,1)
     r = length(s)
     V = zeros(n,r)
@@ -53,7 +68,7 @@ function i0interpolate(E,A,B,C,c,b,s; P_r=I, P_l=I)
     return Er,Ar,Br,Cr
 end
 
-function i1interpolate(E,A,B,C,D,Dr,c,b,s; P_r=I, P_l=I)
+function i1interpolate(E, A, B, C, D, Dr, c, b, s; P_r=I, P_l=I)
     n = size(A,1)
     r = length(s)
     V = zeros(Float64, n, r)
@@ -117,12 +132,19 @@ function update_s_history!(s, s_history, cycle_detection_length)
 end
 
 """
-    i0irka(
-        sys::Union{DescriptorStateSpace,SparseDescriptorStateSpace},
-        r::Int, irka_options::IRKAOptions
+    irka(
+        sys::AbstractDescriptorStateSpace, r, irka_options::IRKAOptions;
+        P_r=I, P_l=I, Dr=nothing
     )
 
-IRKA for index-0 systems.
+Computes a reduced-order model for `sys` using the
+Iterative rational Krylov Algorithm (IRKA) [AntBG20](@cite).
+
+The parameter `r` corresponds to the dimension of the reduced-order model.
+If `Dr=nothing`, the feed-through matrix ``D_r`` of the reduced-order model
+is set to the original feed-through matrix ``D`` of the full-order model.
+For descriptor systems, the spectral projectors used for interpolation may
+be provided via the parameters `P_r` and `P_l` [GugSW13; Sec. 3](@cite).
 """
 function irka(
     sys::AbstractDescriptorStateSpace, r, irka_options::IRKAOptions;
@@ -183,21 +205,24 @@ function irka(
 end
 
 """
-    i1irka(sys::SemiExplicitIndex1DAE, r::Int, irka_options::IRKAOptions)
+    irka(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions)
 
-IRKA for semiexplicit index-1 DAEs.
+Computes a reduced-order model for the semi-explicit index-1 system `sys`
+using the Iterative rational Krylov Algorithm (IRKA) [AntBG20,GugSW13](@cite).
 
-Gugercin, S., Stykel, T., & Wyatt, S. (2013). Model Reduction of Descriptor
-Systems by Interpolatory Projection Methods. SIAM. https://doi.org/10.1137/130906635
+The parameter `r` corresponds to the dimension of the reduced-order model.
 """
 function irka(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions)
     return irka(sys, r, irka_options; Dr = sys.M_0)
 end
 
 """
-    i1irka(sys::StaircasePHDAE, r::Int, irka_options::IRKAOptions)
+    irka(sys::StaircaseDAE, r, irka_options::IRKAOptions)
 
-IRKA for port-Hamiltonian DAEs in staircase form.
+Computes a reduced-order model for the staircase system `sys` using the
+Iterative rational Krylov Algorithm (IRKA) [AntBG20,GugSW13](@cite).
+
+The parameter `r` corresponds to the dimension of the reduced-order model.
 """
 function irka(sys::StaircaseDAE, r, irka_options::IRKAOptions)
     (; M_0, M_1, P_r, P_l, m) = sys
@@ -211,8 +236,12 @@ function irka(sys::StaircaseDAE, r, irka_options::IRKAOptions)
 end
 
 """
-Retry IRKA `max_retries` times and pick the result with the lowest H2-error.
-`syssp` is the strictly proper subsystem of the full-order model.
+    retry_irka(run, max_tries, syssp)
+
+Retries IRKA `max_tries` times and picks the result with the lowest H2-error.
+The strictly proper subsystem of the full-order model `syssp` must be supplied 
+in order to compute the H2-error. The parameter `run` must be a callable which
+executes IRKA.
 """
 function retry_irka(run, max_tries, syssp)
     Random.seed!(0)

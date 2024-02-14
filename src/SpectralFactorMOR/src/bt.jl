@@ -2,8 +2,8 @@
     lrcf(X, trunc_tol)
 
 Computes an approximate low-rank Cholesky-like 
-factorization of a symmetric positive semi-definite matrix X s.t. X = Z'*Z
-(up to a prescribed tolerance trunc_tol).
+factorization of a symmetric positive semi-definite matrix ``X``
+s.t. ``X = Z^T Z`` (up to a prescribed tolerance `trunc_tol`).
 """
 function lrcf(X, trunc_tol)
     d,L = eigen(Symmetric(X))
@@ -12,12 +12,11 @@ function lrcf(X, trunc_tol)
 end
 
 """
-    truncation(d, L, trunc_tol)
+    truncation(d, L, trunc_tol) -> (dr, Lr)
 
 Computes a rank revealing factorization for a given LDL-decomposition of
-``S = L * diagm(d) * L'`` (up to a prescribed tolerance trunc_tol).
-
-Returns dr,Lr such that ``Lr * diagm(d) * Lr' \\approx S``.
+``S = L * \\mathrm{diag}(d) * L^T`` (up to a prescribed tolerance `trunc_tol`)
+such that ``L_r * diag(d_r) * L_r^T \\approx S``.
 """
 function truncation(d, L, trunc_tol)
     Q,R = qr(L)
@@ -30,25 +29,32 @@ function truncation(d, L, trunc_tol)
 end
 
 """
-    compress_lr(Z, r::Int)
+    compress_lr(Z, r)
 
 Compresses ``Z`` via SVD such that it holds
 ``Z Z^T ≈ Z_\\mathrm{new} Z_\\mathrm{new}^T``,
 where ``Z_\\mathrm{new}`` is the returned matrix.
 """
-function compress_lr(Z, r::Int)
+function compress_lr(Z, r)
     U, Σ = svd(Z)
     return U[:,1:r]*Diagonal(Σ[1:r])
 end
 
 """
-    prbaltrunc(sys::SemiExplicitIndex1DAE, r::Int)
+    prbaltrunc(sys::SemiExplicitIndex1DAE, r, Z_prc, Z_pro)
 
-Positive real balanced truncation for descriptor systems
-[DAE_Forum_IV, Algorithm 2].
+Computes a reduced-order model for the semi-explicit index-1 system `sys`
+using positive real balanced truncation [DAE_Forum_IV_mor; Alg. 2](@cite).
 
-The parameter `r` corresponds to the reduced order
-of the finite part of the system.
+The parameter `r` corresponds to the dimension of the reduced-order model.
+
+The parameter `Z_prc` must be a (low-rank) Cholesky factor such that
+``Z_\\mathrm{prc}^T Z_\\mathrm{prc}``
+is the positive real controllability Gramian.
+
+The parameter `Z_pro` must be a (low-rank) Cholesky factor such that
+``Z_\\mathrm{pro}^T Z_\\mathrm{pro}``
+is the positive real observability Gramian.
 """
 function prbaltrunc(sys::SemiExplicitIndex1DAE, r, Z_prc, Z_pro)
     (; E, A, B, C, M_0) = sys
@@ -69,6 +75,23 @@ function prbaltrunc(sys::SemiExplicitIndex1DAE, r, Z_prc, Z_pro)
     return dss(Ar, Er, Br, Cr, Dr)
 end
 
+"""
+    prbaltrunc(sys::StaircaseDAE, r, Z_prc, Z_pro)
+
+Computes a reduced-order model for the staircase system `sys`
+using positive real balanced truncation [DAE_Forum_IV_mor; Alg. 2](@cite).
+
+The parameter `r` corresponds to the dimension
+of the finite part of the reduced-order model.
+
+The parameter `Z_prc` must be a (low-rank) Cholesky factor such that
+``Z_\\mathrm{prc}^T Z_\\mathrm{prc}``
+is the positive real controllability Gramian.
+
+The parameter `Z_pro` must be a (low-rank) Cholesky factor such that
+``Z_\\mathrm{pro}^T Z_\\mathrm{pro}``
+is the positive real observability Gramian.
+"""
 function prbaltrunc(sys::StaircaseDAE, r, Z_prc, Z_pro)
     (; E, A, B, C, M_0, M_1, m) = sys
 

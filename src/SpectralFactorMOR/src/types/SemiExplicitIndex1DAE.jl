@@ -69,7 +69,8 @@ end
 """
     toindex0(sys::SemiExplicitIndex1DAE)
 
-Transform `sys` to a system with index 0.
+Transforms `sys` to a system with index 0.
+Returns a system of type [`SemiExplicitIndex1DAE`](@ref).
 """
 function toindex0(sys::SemiExplicitIndex1DAE)
     E_i0 = sys.E_11

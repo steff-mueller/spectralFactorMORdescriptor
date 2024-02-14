@@ -1,3 +1,11 @@
+"""
+    ispr(sys::AbstractDescriptorStateSpace) -> (ispr, mineigval, w)
+
+Checks if the system is positive real by
+sampling the Popov function on the imaginary axis
+and verifying that the Popov function is positive
+semi-definite for all sample points.
+"""
 function ispr(sys::AbstractDescriptorStateSpace)
     (; E, A, B, C, D) = sys
     T(s) = Matrix(C)/(s.*E-A)*B + D
@@ -9,11 +17,13 @@ function ispr(sys::AbstractDescriptorStateSpace)
     ]
 
     mineigval, idx = findmin(minimum.(eigvals.(popov.(w))))
-    return (ispr = mineigval > 0, mineigval = mineigval, w = w[idx])
+    return (ispr = mineigval >= 0, mineigval = mineigval, w = w[idx])
 end
 
 """
-Check if `sys` is asymptotically stable.
+    isastable(sys::AbstractDescriptorStateSpace)
+
+Checks if `sys` is asymptotically stable.
 """
 function isastable(sys::AbstractDescriptorStateSpace)
     sys_poles = filter(s -> !isinf(s), gpole(sys)) # finite eigenvalues
@@ -21,7 +31,25 @@ function isastable(sys::AbstractDescriptorStateSpace)
 end
 
 """
-Check if `X` satisfies the projected positive real Lur'e equation.
+    checkprojlure(sys, X)
+
+Checks if `X` satisfies the projected positive real Lur'e equation,
+i. e., if there exist matrices ``L`` and ``M`` such that
+
+```math
+\\begin{align*}
+	\\begin{bmatrix}
+		-A^TXE-E^TXA & P_r^TC^T - E^TXB\\\\
+		CP_r - B^TXE & M_0+M_0^T
+	\\end{bmatrix} &= \\begin{bmatrix}
+		L^T\\\\
+        M^T
+	\\end{bmatrix} \\begin{bmatrix}
+		L & M
+	\\end{bmatrix},\\\\
+	X=X^T &\\geq 0,\\ X=P_l^TXP_l.
+\\end{align*}
+```
 """
 function checkprojlure(sys, X)
     (; E, A, B, C, M_0, P_l, P_r) = sys
@@ -38,9 +66,9 @@ function checkprojlure(sys, X)
 end
 
 """
-    splitsys(sys::SemiExplicitIndex1DAE)
+    splitsys(sys::SemiExplicitIndex1DAE) -> (sys1, sys2)
 
-Return infinite and strictly proper subsystems.
+Returns the infinite and strictly proper subsystems of `sys`.
 
 - `sys1` is the infinite subsystem.
 - `sys2` is the strictly proper subsystem.
@@ -69,9 +97,9 @@ function splitsys(sys::SemiExplicitIndex1DAE)
 end
 
 """
-    splitsys(sys::AlmostKroneckerDAE)
+    splitsys(sys::AlmostKroneckerDAE) -> (sys1, sys2)
 
-Return infinite and strictly proper subsystems.
+Returns the infinite and strictly proper subsystems of `sys`.
 
 - `sys1` is the infinite subsystem.
 - `sys2` is the strictly proper subsystem.
@@ -88,9 +116,9 @@ function splitsys(sys::AlmostKroneckerDAE)
 end
 
 """
-splitsys(sys::StaircaseDAE)
+    splitsys(sys::StaircaseDAE) -> (sys1, sys2)
 
-Return infinite and strictly proper subsystems.
+Returns the infinite and strictly proper subsystems of `sys`.
 
 - `sys1` is the infinite subsystem.
 - `sys2` is the strictly proper subsystem.

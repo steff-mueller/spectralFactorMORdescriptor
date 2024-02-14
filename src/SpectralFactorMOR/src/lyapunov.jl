@@ -1,15 +1,15 @@
 """
     lyapc_lradi(A, E, B, P_l=I; tol=1e-12, max_iterations=150)
 
-LR-ADI method for the projected continuous-time Lyapunov equation
-[DAE_Forum_IV, Algorithm 7]
+Computes a low-rank solution for the projected continuous-time Lyapunov equation
 
-    EXA^T + AXE^T = - P_l BB^T P_l^T,
-    X = P_r X P_r^T.
+```math
+EXA^T + AXE^T = - P_l BB^T P_l^T,\\quad
+X = P_r X P_r^T
+```
 
-Returns an approximate solution Z such that
-
-    X ≈ Z*Z'.
+using the LR-ADI method [DAE_Forum_IV_mor; Alg. 7](@cite).
+Returns an approximate solution ``Z`` such that ``X ≈ Z Z^T``.
 """
 function lyapc_lradi(A, E, B, P_l=I; tol=1e-12, max_iterations=150)
     n = size(A,1)
@@ -51,12 +51,12 @@ function lyapc_lradi(A, E, B, P_l=I; tol=1e-12, max_iterations=150)
 end
 
 """
-    initial_shifts(A,E,B,max_iterations=10,iter=0)
+    initial_shifts(A, E, B, max_iterations=10, iter=1)
 
-Returns initial shifts for LR-ADI method.
+Returns initial shifts for the LR-ADI method.
 
-See [Kür16_Doktorarbeit, pp. 92-95] and
-https://github.com/pymor/pymor/blob/main/src/pymor/algorithms/lradi.py.
+See [Kue16; pp. 92-95](@cite) and
+<https://github.com/pymor/pymor/blob/main/src/pymor/algorithms/lradi.py>.
 """
 function initial_shifts(A, E, B, max_iterations=10, iter=1)
     k = size(B,2)
@@ -74,12 +74,12 @@ function initial_shifts(A, E, B, max_iterations=10, iter=1)
 end
 
 """
-    new_shifts(A,E,V,Z,prev_shifts,subspace_columns=6)
+    new_shifts(A, E, V, Z, prev_shifts, subspace_columns=6)
 
-Returns new intermediate shifts for LR-ADI method.
+Returns new intermediate shifts for the LR-ADI method.
 
-See [Kür16_Doktorarbeit, pp. 92-95] and
-https://github.com/pymor/pymor/blob/main/src/pymor/algorithms/lradi.py.
+See [Kue16; pp. 92-95](@cite) and
+<https://github.com/pymor/pymor/blob/main/src/pymor/algorithms/lradi.py>.
 """
 function new_shifts(A, E, V, Z, prev_shifts, subspace_columns=6)
     num_columns = min(subspace_columns * size(V,2), 
