@@ -20,7 +20,8 @@ shell> git clone https://github.com/steff-mueller/spectralFactorMORdescriptor.gi
 shell> cd spectralFactorMORdescriptor
 ```
 
-Activate and instantiate the environment using the [Julia package manager](https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project)
+Activate and instantiate the Julia environment using the
+[Julia package manager](https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project)
 to install the required packages:
 
 ```julia
@@ -44,6 +45,12 @@ shell> julia --project=. scripts/rcl.jl
 
 The experiment results are stored under `data/`.
 
+## Julia package
+
+The project contains a Julia package under `src/SpectralFactorMOR`
+which you can include in your own Julia projects to use the methods.
+See the instructions [here][docs-url-pkg].
+
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
@@ -56,5 +63,6 @@ Benjamin Unger - benjamin.unger@simtech.uni-stuttgart.de
 [ci-url]: https://github.com/steff-mueller/spectralFactorMORdescriptor/actions
 [docs-shield]: https://img.shields.io/badge/docs-online-blue.svg
 [docs-url]: https://steff-mueller.github.io/spectralFactorMORdescriptor/
+[docs-url-pkg]: https://steff-mueller.github.io/spectralFactorMORdescriptor/SpectralFactorMOR
 [license-shield]: https://img.shields.io/github/license/steff-mueller/spectralFactorMORdescriptor.svg
 [license-url]: https://github.com/steff-mueller/spectralFactorMORdescriptor/blob/main/LICENSE
