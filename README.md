@@ -4,6 +4,13 @@
 [![Docs][docs-shield]][docs-url]
 [![MIT License][license-shield]][license-url]
 
+## Citing
+
+If you use this project for academic work, please consider citing our
+[publication][arxiv-url]:
+
+    TODO
+
 ## How to install
 
 Clone the project and navigate to the folder:
@@ -44,6 +51,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Steffen Müller - steffen.mueller@simtech.uni-stuttgart.de\
 Benjamin Unger - benjamin.unger@simtech.uni-stuttgart.de
 
+[arxiv-url]: TODO
 [ci-shield]: https://github.com/steff-mueller/spectralFactorMORdescriptor/workflows/CI/badge.svg
 [ci-url]: https://github.com/steff-mueller/spectralFactorMORdescriptor/actions
 [docs-shield]: https://img.shields.io/badge/docs-online-blue.svg
