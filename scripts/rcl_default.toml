@@ -1,5 +1,5 @@
 [rcl]
-run_problem = "DAE1_RCL_Simple_SISO"
+run_problem = "RCL-1-SISO-SIMPLE"
 reduced_orders = [2, 10, 20]
 irka_tries = 1
 run_methods = [

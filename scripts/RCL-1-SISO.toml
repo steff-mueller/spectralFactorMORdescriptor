@@ -1,0 +1,23 @@
+[rcl]
+run_problem = "RCL-1-SISO"
+reduced_orders = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+irka_tries = 3
+run_methods = [
+    "irka",
+    "sfmor(X_min)",
+    "sfmor(X_alt)",
+    "prbt",
+]
+compute_h2_errors = true
+plot_tf = true
+dense_riccati_solver = false
+
+[irka_options]
+conv_tol = 1e-8
+max_iterations = 400
+cycle_detection_length = 2
+cycle_detection_tol = 1e-10
+s_init_start = 0
+s_init_stop = 1
+randomize_s_init = true
+randomize_s_var = 0.3

@@ -11,7 +11,7 @@ The struct holds options for the IRKA algorithm.
   initial interpolation points. The initial interpolation points are
   distributed logarithmically between `10^s_init_start` and `10^s_init_stop`.
 - If `randomize_s_init` is true, the initial interpolation points
-  are disturbed randomly by `randn`.
+  are disturbed randomly by `randn`. The variance is set by `randomize_s_var`.
 """
 Base.@kwdef struct IRKAOptions
     conv_tol = 1e-3
@@ -21,6 +21,7 @@ Base.@kwdef struct IRKAOptions
     s_init_start = -1
     s_init_stop = 1
     randomize_s_init = false
+    randomize_s_var = 1.0
 end
 
 struct IRKAResult
@@ -150,14 +151,15 @@ function irka(
     sys::AbstractDescriptorStateSpace, r, irka_options::IRKAOptions;
     P_r=I, P_l=I, Dr=nothing
 )
-    (; conv_tol, max_iterations, s_init_start, s_init_stop, randomize_s_init,
+    (; conv_tol, max_iterations, s_init_start, s_init_stop,
+       randomize_s_init, randomize_s_var,
        cycle_detection_length, cycle_detection_tol) = irka_options
     (; A, E, B, C, D) = sys
     c = size(sys.D,1)==1 ? ones(1,r) : randn(size(D,1),r)
     b = size(sys.D,2)==1 ? ones(1,r) : randn(size(D,2),r)
     sexp = range(s_init_start, stop=s_init_stop, length=r)
     if (randomize_s_init)
-        sexp = sexp .+ randn(r)
+        sexp = sexp .+ (randomize_s_var .* randn(r))
         @info "irka: Random init sexp" sexp
     end
     s = (10+0*im) .^ sexp
@@ -254,22 +256,26 @@ function retry_irka(run, max_tries, syssp)
     return_stable = false
     for i = 1:max_tries
         @info "retry_irka: Starting $i try."
-        rom, irka_result = run()
-        @assert rom isa DescriptorStateSpace
-        stable = isastable(rom)
-        _, romsp = gsdec(rom; job="infinite")
-        abs_h2_error = gh2norm(syssp - romsp)
-        @info "retry_irka: Try: $i, Abs H2-error $abs_h2_error, Stable $stable."
-        if (
-            # only set new ROM if "better" than current one:
-            (!return_stable || stable)
-            && abs_h2_error < return_abs_h2_error
-        )
-            return_rom = rom
-            return_irka_result = irka_result
-            return_abs_h2_error = abs_h2_error
-            return_stable = stable
-        end
+        try
+            rom, irka_result = run()
+            @assert rom isa DescriptorStateSpace
+            stable = isastable(rom)
+            _, romsp = gsdec(rom; job="infinite")
+            abs_h2_error = gh2norm(syssp - romsp)
+            @info "retry_irka: Try: $i, Abs H2-error $abs_h2_error, Stable $stable."
+            if (
+                # only set new ROM if "better" than current one:
+                (!return_stable || stable)
+                && abs_h2_error < return_abs_h2_error
+            )
+                return_rom = rom
+                return_irka_result = irka_result
+                return_abs_h2_error = abs_h2_error
+                return_stable = stable
+            end
+        catch e
+            @warn "retry_irka: IRKA run failed." e
+        end 
     end
 
     if !return_irka_result.converged

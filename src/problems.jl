@@ -1,13 +1,13 @@
 function setup_DAE1_RCL(ns::Int64, random::Bool, mimo::Bool)
     Random.seed!(0)
-    E, J, R, Q, G = setup_DAE1_RCL_LadderNetwork_sparse(
+    E, J, R, _, G = setup_DAE1_RCL_LadderNetwork_sparse( # Q=I
         ns = ns,
         r = random
             ? max.(0.2 * (randn(ns+2).+1), 0.001) 
             : 0.2 * ones(ns+2),
         m = mimo ? 2 : 1
     )
-    A = (J-R)*Q
+    A = (J-R)
     B = G
     C = SparseMatrixCSC(G')
     # add regularization term such that M_0+M_0' is nonsingular for m=2
@@ -26,7 +26,7 @@ function setup_DAE2_RCL(ns::Int64, random::Bool, mimo::Bool)
         m = mimo ? 2 : 1
     )
 
-    # Transform into staircase form [AchAM2021]
+    # Transform into staircase form [AchAM21]
     s, UE = eigen(Diagonal(E); sortby=x -> -x)
     rank_E = count(s .!= 0.0)
     n = size(E, 1)
@@ -42,7 +42,7 @@ function setup_DAE2_RCL(ns::Int64, random::Bool, mimo::Bool)
                     spzeros(1, n-2) 1 0])
     end
 
-    return StaircaseDAE(
+    sys = StaircaseDAE(
         E = sparse(Diagonal(s)),
         A = sparse(UE'*(J-R)*UE),
         B = sparse(UE'*G),
@@ -51,37 +51,66 @@ function setup_DAE2_RCL(ns::Int64, random::Bool, mimo::Bool)
         D = 1e-12*Matrix(I, m, m),
         n_1 = n_1, n_2 = n_2, n_3 = n_3, n_4 = n_4
     )
+    @assert is_valid(sys)
+    return sys
 end
 
-function read_ph_mat(path)
-    v = matread(path)
-    E = v["E"]
-    A = (v["J"]-v["R"])*v["Q"]
-    B = v["B"]
-    m = size(B, 2)
-    C = sparse(v["B"]')
-    D = m == 1 ? reshape([v["S"]+v["N"]], (1,1)) : v["S"]+v["N"]
+function read_RCL_1_SISO()
+    E, J, R, G = _readphmat("scripts/RCL-1-SISO.mat")
+    A = (J-R)
+    B = G
+    C = SparseMatrixCSC(G')
+    D = zeros(1,1)
     n_1 = nnz(E)
-    return SemiExplicitIndex1DAE(E,A,B,C,D,n_1)
+    return SemiExplicitIndex1DAE(E, A, B, C, D, n_1)
+end
+
+function read_RCL_2_SISO()
+    E, J, R, G = _readphmat("scripts/RCL-2-SISO.mat")
+
+    # Transform into staircase form [AchAM21]
+    s, UE = eigen(Diagonal(E); sortby=x -> -x)
+    rank_E = count(s .!= 0.0)
+    n = size(E, 1)
+    n_1 = n_4 = 1
+    n_2 = rank_E - 1
+    n_3 = n - n_1 - n_2 - n_4
+    m = 1
+
+    t = sparse(I(n))
+    t[1,1] = t[999,999] = 0
+    t[999,1] = t[1,999] = 1
+    UE = UE*t
+
+    sys = StaircaseDAE(
+        E = dropzeros(t'*Diagonal(s)*t),
+        A = sparse(UE'*(J-R)*UE),
+        B = sparse(UE'*G),
+        C = sparse(G'*UE),
+        # add regularization term such that M_0+M_0' is nonsingular
+        D = 1e-12*Matrix(I, m, m),
+        n_1 = n_1, n_2 = n_2, n_3 = n_3, n_4 = n_4
+    )
+    @assert is_valid(sys)
+    return sys
+end
+
+function _readphmat(path)
+    v = matread(path)
+    return v["E"], v["J"], v["R"], v["B"]
 end
 
 function get_problem(name)
     problems = Dict(
-        "DAE1_RCL_Simple_SISO" => () -> setup_DAE1_RCL(500, false, false),
-        "DAE1_RCL_Random_SISO" => () -> setup_DAE1_RCL(500, true, false),
-        "DAE0_RCL_Simple_SISO" => () ->
-            toindex0(setup_DAE1_RCL(500, false, false)), # index-reduced sys
-        "DAE0_RCL_Random_SISO" => () ->
-            toindex0(setup_DAE1_RCL(500, true, false)), # index-reduced sys
-        "DAE1_RCL_Simple_MIMO" => () -> setup_DAE1_RCL(500, false, true),
-        "DAE1_RCL_Random_MIMO" => () -> setup_DAE1_RCL(500, true, true),
-        "DAE2_RCL_Simple_SISO" => () -> setup_DAE2_RCL(500, false, false),
-        "DAE2_RCL_Random_SISO" => () -> setup_DAE2_RCL(500, true, false),
-        "DAE2_RCL_Simple_MIMO" => () -> setup_DAE2_RCL(500, false, true),
-        "DAE2_RCL_Random_MIMO" => () -> setup_DAE2_RCL(500, false, true),
-        "SchMMV22_FOM-CONS" => () -> read_ph_mat("scripts/SchMMV22_FOM-CONS.mat"),
-        "SchMMV22_FOM-RAND" => () -> read_ph_mat("scripts/SchMMV22_FOM-RAND.mat"),
-        "SchMMV22_FOM-MIMO" => () -> read_ph_mat("scripts/SchMMV22_FOM-MIMO.mat")
+        "RCL-1-SISO-SIMPLE" => () -> setup_DAE1_RCL(500, false, false),
+        "RCL-1-SISO" => () -> read_RCL_1_SISO(),
+        "RCL-1-MIMO" => () -> setup_DAE1_RCL(500, true, true),
+        "RCL-0-SISO" => () -> toindex0(
+            read_RCL_1_SISO()), # index-reduced sys
+        "RCL-0-MIMO" => () -> toindex0(
+            setup_DAE1_RCL(500, true, true)),  # index-reduced sys
+        "RCL-2-SISO" => () -> read_RCL_2_SISO(),
+        "RCL-2-MIMO" => () -> setup_DAE2_RCL(500, true, true)
     )
     return problems[name]()
 end

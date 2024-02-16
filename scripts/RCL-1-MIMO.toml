@@ -1,10 +1,11 @@
 [rcl]
-run_problem = "DAE2_RCL_Random_MIMO"
+run_problem = "RCL-1-MIMO"
 reduced_orders = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 irka_tries = 3
 run_methods = [
     "irka",
     "sfmor(X_min)",
+    "sfmor(X_alt)",
     "prbt",
 ]
 compute_h2_errors = true
@@ -13,7 +14,7 @@ dense_riccati_solver = true
 
 [irka_options]
 conv_tol = 1e-3
-max_iterations = 100
+max_iterations = 400
 cycle_detection_length = 2
 cycle_detection_tol = 1e-4
 s_init_start = 0

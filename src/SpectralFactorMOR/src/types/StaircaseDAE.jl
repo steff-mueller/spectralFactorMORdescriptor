@@ -126,6 +126,7 @@ function is_valid(sys::StaircaseDAE)
        E, A, idx_1, idx_2, idx_3, idx_4) = sys
     return (
         E==E'
+        && n_1 == n_4
         && rank(E_11) == n_1
         && rank(E_22) == n_2
         && nnz(E[idx_1, idx_2]) == 0
