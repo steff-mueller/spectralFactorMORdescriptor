@@ -47,7 +47,7 @@ results, sys = start_experiment(experiment_id) do
         MORMethod(
             "sfmor(X_min)",
             r -> sfmor(sys, r, irka_options;
-                 X = Xo, compute_factors=:firstm),
+                 X = Xo, compute_factors=:together),
             :orange, :cross
         ),
         MORMethod(

@@ -7,7 +7,9 @@ s.t. ``X = Z^T Z`` (up to a prescribed tolerance `trunc_tol`).
 """
 function lrcf(X, trunc_tol)
     d,L = eigen(Symmetric(X))
-    dr,Lr = truncation(d,L, trunc_tol)
+    # remove negative eigenvalues (numerical errors)
+    idx = findall(v -> v >= 0, d)
+    dr, Lr = truncation(d[idx], L[:, idx], trunc_tol)
     return (Lr*diagm(sqrt.(dr)))'
 end
 
@@ -24,7 +26,7 @@ function truncation(d, L, trunc_tol)
     d,U = eigen(tmp)
     p = sortperm(d, by=abs, rev=true)
     d = d[p]
-    trunc_index = findlast(d/d[1] .>= trunc_tol)
+    trunc_index = findlast(abs.(d/d[1]) .>= trunc_tol)
     return d[1:trunc_index], Q*U[:,p[1:trunc_index]]
 end
 
