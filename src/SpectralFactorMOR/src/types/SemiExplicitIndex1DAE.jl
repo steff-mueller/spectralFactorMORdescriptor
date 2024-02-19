@@ -12,7 +12,7 @@ A = \\begin{bmatrix}
 \\end{bmatrix}
 ```
 
-with ``E_{11}`` nonsingular. The system matrices ``B`` and ``C``
+with ``E_{11}`` and ``A_{22}`` nonsingular. The system matrices ``B`` and ``C``
 are partitioned accordingly as
 
 ```math

@@ -76,8 +76,8 @@ The result is cached using the
         spzeros(n_4, n_1) Matrix(A_14)\(-A_12 + A_13/Matrix(A_33)*A_32) spzeros(n_4, n_3) inv(Matrix(A_14))]
 
     return AlmostKroneckerDAE(
-        E = dropzeros(L_A*sys.E*Z_A),
-        A = dropzeros(L_A*sys.A*Z_A),
+        E = L_A*sys.E*Z_A,
+        A = L_A*sys.A*Z_A,
         B = L_A*sys.B,
         C = sys.C*Z_A,
         D = sys.D,
@@ -125,16 +125,15 @@ function is_valid(sys::StaircaseDAE)
     (; E_11, E_22, A_33, A_14, A_41, n_1, n_2, n_3, n_4,
        E, A, idx_1, idx_2, idx_3, idx_4) = sys
     return (
-        E==E'
-        && n_1 == n_4
+        n_1 == n_4
         && rank(E_11) == n_1
         && rank(E_22) == n_2
-        && nnz(E[idx_1, idx_2]) == 0
-        && nnz(E[:, [idx_3; idx_4]]) == 0
+        && iszero(E[idx_1, idx_2])
+        && iszero(E[:, [idx_3; idx_4]])
         && rank(A_33) == n_3
         && rank(A_14) == n_4
         && A_14 == -A_41'
-        && nnz(A[[idx_2; idx_3; idx_4], idx_4]) == 0
-        && nnz(A[idx_4, [idx_2; idx_3; idx_4]]) == 0
+        && iszero(A[[idx_2; idx_3; idx_4], idx_4])
+        && iszero(A[idx_4, [idx_2; idx_3; idx_4]])
     )
 end

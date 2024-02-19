@@ -42,19 +42,13 @@ function sfmor(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions;
 
     # Compute ROM for spectral factor
     rom_H, result = irka(Σ_H, r, irka_options)
-    Ar, Er, Br, Lr, Mr = dssdata(rom_H)
 
-    # i1irka preserves the feed-through term,
-    # i.e. Mr = M for semi-explicit index-1 systems, since
-    # `Σ_H.C_2 = 0`. Thus, we can equivalently choose
-    # Dr = M_0 instead of Dr = 0.5*(Mr'*Mr)+skew(M_0).
-    # This choice has the advantage that we do not introduce
-    # numerical errors from the Cholesky factorization.
+    Er = rom_H.E; Ar = rom_H.A; Br = rom_H.B; Lr = rom_H.C
     Dr = M_0
     Xr = lyapc(Ar', Er', Lr'*Lr)
-    Cr = Br'*Xr*Er + Mr'*Lr
+    Cr = Br'*Xr*Er + M'*Lr
 
-    return dss(Ar, Er, Br, Cr, Dr), result
+    return SemiExplicitIndex1DAE(Er, Ar, Br, Cr, Dr, r), result
 end
 
 """
@@ -88,15 +82,31 @@ function sfmor(sys::StaircaseDAE, r, irka_options::IRKAOptions;
     # Compute ROM for spectral factor
     romf_H, result = irka(Σ_H, r, irka_options; P_r = P_r, P_l = P_l)
 
-    Ar_f, Er_f, Br_f, Lr_f, = dssdata(romf_H)
+    Er_f = romf_H.E; Ar_f = romf_H.A; Br_f = romf_H.B; Lr_f = romf_H.C
     Xr_f = lyapc(Ar_f', Er_f', Lr_f'*Lr_f)
     Cr_f = Br_f'*Xr_f*Er_f + M'*Lr_f
-    romp = dss(Ar_f, Er_f, Br_f, Cr_f, M_0)
+    romp = GenericDescriptorStateSpace(Er_f, Ar_f, Br_f, Cr_f, M_0)
 
-    # TODO Generalize construction of `rominf` if rank(Z) > 1
+    # TODO Generalize construction of ROM if rank(Z) > 1
     Z = lrcf(M_1, 10*eps(Float64)) # M_1 = Z'*Z
-    # `M_0` is already included in `romp`.
-    rominf = dss([1 0; 0 1], [0 1; 0 0], [zeros(1, m); Z], [-Z' zeros(m, 1)], 0)
-
-    return romp + rominf, result
+    return StaircaseDAE(
+        E = [
+            1 zeros(1,r) 0;
+            zeros(r,1) romp.E zeros(r,1);
+            0 zeros(1,r) 0
+        ],
+        A = [
+            0 zeros(1,r) -1;
+            zeros(r,1) romp.A zeros(r,1);
+            1 zeros(1,r) 0
+        ],
+        B = [
+            zeros(1, m);
+            romp.B;
+            Z
+        ],
+        C = [zeros(m, 1) romp.C Z'],
+        D = romp.D,
+        n_1 = 1, n_2 = r, n_3 = 0, n_4 = 1 
+    ), result
 end

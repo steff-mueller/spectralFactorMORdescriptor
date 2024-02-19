@@ -32,7 +32,7 @@ struct Result
     r::Int64
     irka_result::Union{IRKAResult, Nothing}
     abs_h2_error::Union{Nothing,Float64}
-    rom::DescriptorStateSpace
+    rom::AbstractDescriptorStateSpace
     rom_stable::Bool
     rom_pr::NamedTuple{
         (:ispr, :mineigval, :w), Tuple{Bool, Float64, Float64}}

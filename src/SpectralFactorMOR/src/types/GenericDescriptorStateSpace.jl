@@ -7,13 +7,23 @@ struct GenericDescriptorStateSpace{Tv, T <: AbstractMatrix{Tv}} <: AbstractDescr
     Ts::Float64
 end
 
+function GenericDescriptorStateSpace(
+    E::T,
+    A::T,
+    B::T,
+    C::T,
+    D::Matrix{Tv}
+) where {Tv, T <: AbstractMatrix{Tv}}
+    GenericDescriptorStateSpace(E, A, B, C, D, 0.0)
+end
+
 function +(
     sys1::AbstractDescriptorStateSpaceT{Tv1},
     sys2::AbstractDescriptorStateSpaceT{Tv2}
 ) where {Tv1,Tv2}
     T = promote_type(Tv1, Tv2)
     n1 = size(sys1.A, 1)
-    n2 = sys2.nx
+    n2 = size(sys2.A, 1)
     A = [sys1.A  spzeros(T,n1,n2);
          spzeros(T,n2,n1) sys2.A]
     E = [sys1.E  spzeros(T,n1,n2);
@@ -34,9 +44,4 @@ function -(
     sys2::AbstractDescriptorStateSpaceT{Tv2}
 ) where {Tv1,Tv2}
     return sys1 + (-sys2)
-end
-
-function todss(sys::AbstractDescriptorStateSpace)
-    (; E, A, B, C, D) = sys
-    return dss(A, E, B, C, D)
 end

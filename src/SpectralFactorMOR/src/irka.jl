@@ -200,7 +200,9 @@ function irka(
 
     converged = conv_crit < conv_tol
     @info "IRKA iterations" iter converged conv_crit
-    return dss(Ar, Er, Br, Cr, isnothing(Dr) ? D : Dr), IRKAResult(
+
+    rom = GenericDescriptorStateSpace(Er, Ar, Br, Cr, isnothing(Dr) ? D : Dr)
+    return rom, IRKAResult(
         iter, converged, conv_crit,
         cycle_detected, cycle_crit, s, c, b
     )
@@ -215,7 +217,8 @@ using the Iterative rational Krylov Algorithm (IRKA) [AntBG20,GugSW13](@cite).
 The parameter `r` corresponds to the dimension of the reduced-order model.
 """
 function irka(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions)
-    return irka(sys, r, irka_options; Dr = sys.M_0)
+    rom, result = irka(sys, r, irka_options; Dr = sys.M_0)
+    return SemiExplicitIndex1DAE(rom.E, rom.A, rom.B, rom.C, rom.D, r), result
 end
 
 """
@@ -230,11 +233,28 @@ function irka(sys::StaircaseDAE, r, irka_options::IRKAOptions)
     (; M_0, M_1, P_r, P_l, m) = sys
     romp, result = irka(sys, r, irka_options; P_r = P_r, P_l = P_l, Dr = M_0)
 
-    # TODO Generalize construction of `rominf` if rank(Z) > 1
+    # TODO Generalize construction of ROM if rank(Z) > 1
     Z = lrcf(M_1, 10*eps(Float64)) # M_1 = Z'*Z
-    # `M_0` is already included in `romp`.
-    rominf = dss([1 0; 0 1], [0 1; 0 0], [zeros(1, m); Z], [-Z' zeros(m, 1)], 0)
-    return romp + rominf, result
+    return StaircaseDAE(
+        E = [
+            1 zeros(1,r) 0;
+            zeros(r,1) romp.E zeros(r,1);
+            0 zeros(1,r) 0
+        ],
+        A = [
+            0 zeros(1,r) -1;
+            zeros(r,1) romp.A zeros(r,1);
+            1 zeros(1,r) 0
+        ],
+        B = [
+            zeros(1, m);
+            romp.B;
+            Z
+        ],
+        C = [zeros(m, 1) romp.C Z'],
+        D = romp.D,
+        n_1 = 1, n_2 = r, n_3 = 0, n_4 = 1 
+    ), result
 end
 
 """
@@ -258,10 +278,10 @@ function retry_irka(run, max_tries, syssp)
         @info "retry_irka: Starting $i try."
         try
             rom, irka_result = run()
-            @assert rom isa DescriptorStateSpace
+            @assert rom isa AbstractDescriptorStateSpace
             stable = isastable(rom)
-            _, romsp = gsdec(rom; job="infinite")
-            abs_h2_error = gh2norm(syssp - romsp)
+            _, romsp, = splitsys(rom)
+            abs_h2_error = gh2norm(todss(syssp - romsp))
             @info "retry_irka: Try: $i, Abs H2-error $abs_h2_error, Stable $stable."
             if (
                 # only set new ROM if "better" than current one:

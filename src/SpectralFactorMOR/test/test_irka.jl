@@ -51,7 +51,7 @@ for problem in problems
         Random.seed!(0)
         sysinf, syssp, = splitsys(sys)
         rom, result = irka(sys, 10, IRKAOptions())
-        @test rom isa DescriptorStateSpace
+        @test rom isa AbstractDescriptorStateSpace
         @test result isa IRKAResult
         T(s) = Matrix(sys.C)/(s.*sys.E-sys.A)*sys.B+sys.D
         Tr(s) = Matrix(rom.C)/(s.*rom.E-rom.A)*rom.B+rom.D

@@ -74,7 +74,7 @@ function prbaltrunc(sys::SemiExplicitIndex1DAE, r, Z_prc, Z_pro)
     Br = W'*B
     Cr = C*T
     Dr = M_0
-    return dss(Ar, Er, Br, Cr, Dr)
+    return SemiExplicitIndex1DAE(Er, Ar, Br, Cr, Dr, r)
 end
 
 """
@@ -107,10 +107,26 @@ function prbaltrunc(sys::StaircaseDAE, r, Z_prc, Z_pro)
 
     romf = dss(W'*A*T, W'*E*T, W'*B, C*T, 0)
 
-    # TODO Generalize construction of `rominf` if rank(Z) > 1
+    # TODO Generalize construction of ROM if rank(Z) > 1
     Z = lrcf(M_1, 10*eps(Float64)) # M_1 = Z'*Z
-    rominf = dss(
-        [1 0; 0 1], [0 1; 0 0], [zeros(1, m); Z], [-Z' zeros(m, 1)], M_0)
-    
-    return romf + rominf
+    return StaircaseDAE(
+        E = [
+            1 zeros(1,r) 0;
+            zeros(r,1) W'*E*T zeros(r,1);
+            0 zeros(1,r) 0
+        ],
+        A = [
+            0 zeros(1,r) -1;
+            zeros(r,1) W'*A*T zeros(r,1);
+            1 zeros(1,r) 0
+        ],
+        B = [
+            zeros(1, m);
+            W'*B;
+            Z
+        ],
+        C = [zeros(m, 1) C*T Z'],
+        D = M_0,
+        n_1 = 1, n_2 = r, n_3 = 0, n_4 = 1 
+    )
 end

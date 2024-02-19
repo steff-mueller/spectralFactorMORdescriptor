@@ -30,7 +30,6 @@ results, sys = start_experiment(experiment_id) do
 
     sys = get_problem(config.run_problem)
     sysinf, syssp, = splitsys(sys)
-    sysinf2 = todss(sysinf); syssp2 = todss(syssp) # convert to `dss`
 
     @info """Running problem $(config.run_problem)
             (n = $(size(sys.A,1)), m = $(size(sys.B,2)))."""
@@ -83,14 +82,14 @@ results, sys = start_experiment(experiment_id) do
             irka_result = nothing
         else
             rom, irka_result = retry_irka(() -> reduce_fn(r),
-                config.irka_tries, syssp2)
+                config.irka_tries, syssp)
         end
 
-        rominf, romsp = gsdec(rom; job="infinite")
-        @assert all(dss2rm(rominf) .≈ dss2rm(sysinf2))
+        rominf, romsp, = splitsys(rom)
+        @assert all(dss2rm(todss(rominf)) .≈ dss2rm(todss(sysinf)))
 
         if config.compute_h2_errors
-            abs_h2_error = gh2norm(syssp2 - romsp)
+            abs_h2_error = gh2norm(todss(syssp - romsp))
             @info "Abs H2-error $name, r=$r: $abs_h2_error."
         else
             abs_h2_error = nothing

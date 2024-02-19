@@ -26,7 +26,8 @@ end
 Checks if `sys` is asymptotically stable.
 """
 function isastable(sys::AbstractDescriptorStateSpace)
-    sys_poles = filter(s -> !isinf(s), gpole(sys)) # finite eigenvalues
+    # TODO add methods for sys::SemiExplicitIndex1DAE and sys::StaircaseDAE
+    sys_poles = filter(s -> !isinf(s), gpole(todss(sys))) # finite eigenvalues
     return maximum(real((sys_poles))) < 0
 end
 
@@ -126,4 +127,9 @@ Returns the infinite and strictly proper subsystems of `sys`.
 function splitsys(sys::StaircaseDAE)
     sys_kronecker, = tokronecker(sys)
     return splitsys(sys_kronecker)
+end
+
+function todss(sys::AbstractDescriptorStateSpace)
+    (; E, A, B, C, D) = sys
+    return dss(A, E, B, C, D)
 end
