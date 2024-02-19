@@ -18,11 +18,11 @@ A = \\begin{bmatrix}
 
 with ``E_{11}, E_{22}, A_{14}=-A_{41}^T,A_{33}`` nonsingular.
 """
-Base.@kwdef struct StaircaseDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
-    E::SparseMatrixCSC{Tv,Ti}
-    A::SparseMatrixCSC{Tv,Ti}
-    B::SparseMatrixCSC{Tv,Ti}
-    C::SparseMatrixCSC{Tv,Ti}
+Base.@kwdef struct StaircaseDAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+    E::T
+    A::T
+    B::T
+    C::T
     D::Matrix{Tv}
     n_1::Ti
     n_2::Ti

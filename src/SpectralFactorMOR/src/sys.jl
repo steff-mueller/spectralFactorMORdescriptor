@@ -88,9 +88,9 @@ function splitsys(sys::SemiExplicitIndex1DAE)
     C = C*Z
     i1 = 1:n_1; i2 = n_1+1:n
     return (
-        SparseDescriptorStateSpace(
+        GenericDescriptorStateSpace(
             E[i2,i2], A[i2,i2], B[i2,:], C[:,i2], D, 0.0),
-        SparseDescriptorStateSpace(
+        GenericDescriptorStateSpace(
             E[i1,i1], A[i1,i1], B[i1,:], C[:,i1], zeros(size(D)...), 0.0),
         Q, Z
     )
@@ -108,10 +108,10 @@ function splitsys(sys::AlmostKroneckerDAE)
     (; E, A, B, C, D, A_22, E_22, B_2, C_2, idx_1, idx_3, idx_4, m) = sys
 
     idx_inf = [idx_1; idx_3; idx_4]
-    return SparseDescriptorStateSpace(
+    return GenericDescriptorStateSpace(
                E[idx_inf, idx_inf], A[idx_inf, idx_inf],
                B[idx_inf,:], C[:,idx_inf], D, 0.0),
-           SparseDescriptorStateSpace(
+           GenericDescriptorStateSpace(
                E_22, A_22, B_2, C_2, zeros(m, m), 0.0)
 end
 

@@ -25,23 +25,23 @@ C = \\begin{bmatrix}
 \\end{bmatrix}.
 ```
 """
-Base.@kwdef struct SemiExplicitIndex1DAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
-    E::SparseMatrixCSC{Tv,Ti}
-    A::SparseMatrixCSC{Tv,Ti}
-    B::SparseMatrixCSC{Tv,Ti}
-    C::SparseMatrixCSC{Tv,Ti}
+Base.@kwdef struct SemiExplicitIndex1DAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+    E::T
+    A::T
+    B::T
+    C::T
     D::Matrix{Tv}
-    Ts = 0.0
     n_1::Ti
-    E_11::SparseMatrixCSC{Tv,Ti} = E[1:n_1,1:n_1]
-    A_11::SparseMatrixCSC{Tv,Ti} = A[1:n_1,1:n_1]
-    A_12::SparseMatrixCSC{Tv,Ti} = A[1:n_1,n_1+1:end]
-    A_21::SparseMatrixCSC{Tv,Ti} = A[n_1+1:end,1:n_1]
-    A_22::SparseMatrixCSC{Tv,Ti} = A[n_1+1:end,n_1+1:end]
-    B_1::SparseMatrixCSC{Tv,Ti} = B[1:n_1,1:end]
-    B_2::SparseMatrixCSC{Tv,Ti} = B[n_1+1:end,1:end]
-    C_1::SparseMatrixCSC{Tv,Ti} = C[1:end,1:n_1]
-    C_2::SparseMatrixCSC{Tv,Ti} = C[1:end,n_1+1:end]
+    Ts = 0.0
+    E_11 = E[1:n_1,1:n_1]
+    A_11 = A[1:n_1,1:n_1]
+    A_12 = A[1:n_1,n_1+1:end]
+    A_21 = A[n_1+1:end,1:n_1]
+    A_22 = A[n_1+1:end,n_1+1:end]
+    B_1 = B[1:n_1,1:end]
+    B_2 = B[n_1+1:end,1:end]
+    C_1 = C[1:end,1:n_1]
+    C_2 = C[1:end,n_1+1:end]
     n = size(A, 1)
     n_2 = n-n_1
     P_l = [
@@ -56,13 +56,13 @@ Base.@kwdef struct SemiExplicitIndex1DAE{Tv,Ti} <: AbstractSparseDescriptorState
 end
 
 function SemiExplicitIndex1DAE(
-    E::SparseMatrixCSC{Tv,Ti},
-    A::SparseMatrixCSC{Tv,Ti},
-    B::SparseMatrixCSC{Tv,Ti},
-    C::SparseMatrixCSC{Tv,Ti},
+    E::T,
+    A::T,
+    B::T,
+    C::T,
     D::Matrix{Tv},
     n_1::Ti
-) where {Tv,Ti}
+) where {Tv, Ti, T <: AbstractMatrix{Tv}}
     SemiExplicitIndex1DAE(E=E,A=A,B=B,C=C,D=D,n_1=n_1)
 end
 

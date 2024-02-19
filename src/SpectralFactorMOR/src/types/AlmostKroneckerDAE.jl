@@ -31,11 +31,11 @@ C = \\begin{bmatrix}
 \\end{bmatrix}.
 ```
 """
-Base.@kwdef struct AlmostKroneckerDAE{Tv,Ti} <: AbstractSparseDescriptorStateSpace{Tv,Ti}
-    E::SparseMatrixCSC{Tv,Ti}
-    A::SparseMatrixCSC{Tv,Ti}
-    B::SparseMatrixCSC{Tv,Ti}
-    C::SparseMatrixCSC{Tv,Ti}
+Base.@kwdef struct AlmostKroneckerDAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+    E::T
+    A::T
+    B::T
+    C::T
     D::Matrix{Tv}
     n_1::Ti
     n_2::Ti
