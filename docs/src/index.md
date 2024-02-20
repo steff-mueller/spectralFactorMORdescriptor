@@ -28,7 +28,7 @@ pkg> instantiate
 ## How to reproduce
 
 The `scripts/` folder contains TOML configuration files for
-the different experiments:
+the different experiments from our paper:
 
 | TOML configuration file   | Experiment                     |
 | ------------------------- | ------------------------------ |
