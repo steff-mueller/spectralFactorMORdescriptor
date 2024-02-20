@@ -30,12 +30,12 @@ pkg> instantiate
 The `scripts/` folder contains TOML configuration files for
 the different experiments. Point the `RCL_CONFIG` environment variable to
 the experiment you want to run. Use the `scripts/rcl.jl` script to run an
-experiment.  For example, for `scripts/rcl_dae2_random_mimo.toml`,
+experiment.  For example, for `scripts/RCL-2-SISO.toml`,
 execute the following commands:
 
 ```bash
 shell> cd spectralFactorMORdescriptor
-shell> export RCL_CONFIG="scripts/rcl_dae2_random_mimo.toml"
+shell> export RCL_CONFIG="scripts/RCL-2-SISO.toml"
 shell> julia --project=. scripts/rcl.jl
 ```
 
