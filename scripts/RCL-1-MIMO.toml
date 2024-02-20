@@ -20,3 +20,4 @@ cycle_detection_tol = 1e-4
 s_init_start = 0
 s_init_stop = 1
 randomize_s_init = true
+randomize_s_var = 0.5
