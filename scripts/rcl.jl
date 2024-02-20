@@ -23,7 +23,7 @@ end
 experiment_id = "rcl_$(now())"
 results, sys = start_experiment(experiment_id) do
     # Set ENV variable in REPL via:
-    #   ENV["RCL_CONFIG"] = "scripts/rcl_dae2_random_mimo.toml"
+    #   ENV["RCL_CONFIG"] = "scripts/RCL-2-SISO.toml"
     f = load_toml_config(get(ENV, "RCL_CONFIG", "scripts/rcl_default.toml"))
     config = RCLConfiguration(; to_symbol_dict(f["rcl"])...)
     irka_options = IRKAOptions(; to_symbol_dict(f["irka_options"])...)
@@ -89,7 +89,7 @@ results, sys = start_experiment(experiment_id) do
         @assert all(dss2rm(todss(rominf)) .≈ dss2rm(todss(sysinf)))
 
         if config.compute_h2_errors
-            abs_h2_error = gh2norm(todss(syssp - romsp))
+            abs_h2_error = h2normsp(syssp - romsp)
             @info "Abs H2-error $name, r=$r: $abs_h2_error."
         else
             abs_h2_error = nothing

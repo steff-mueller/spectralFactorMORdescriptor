@@ -129,6 +129,19 @@ function splitsys(sys::StaircaseDAE)
     return splitsys(sys_kronecker)
 end
 
+"""
+    h2normsp(sys::AbstractDescriptorStateSpace)
+
+Computes the H2-norm of the strictly proper system `sys`.
+
+Uses [`lyapc_lradi`](@ref) internally.
+"""
+function h2normsp(sys::AbstractDescriptorStateSpace)
+    (; E, A, B, C) = sys
+    Z = lyapc_lradi(A, E, B)
+    return norm(C*Z, 2)
+end
+
 function todss(sys::AbstractDescriptorStateSpace)
     (; E, A, B, C, D) = sys
     return dss(A, E, B, C, D)

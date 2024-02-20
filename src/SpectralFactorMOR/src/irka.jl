@@ -281,7 +281,7 @@ function retry_irka(run, max_tries, syssp)
             @assert rom isa AbstractDescriptorStateSpace
             stable = isastable(rom)
             _, romsp, = splitsys(rom)
-            abs_h2_error = gh2norm(todss(syssp - romsp))
+            abs_h2_error = h2normsp(syssp - romsp)
             @info "retry_irka: Try: $i, Abs H2-error $abs_h2_error, Stable $stable."
             if (
                 # only set new ROM if "better" than current one:
