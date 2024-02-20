@@ -28,9 +28,18 @@ pkg> instantiate
 ## How to reproduce
 
 The `scripts/` folder contains TOML configuration files for
-the different experiments. Point the `RCL_CONFIG` environment variable to
+the different experiments:
+
+| TOML configuration file   | Experiment                     |
+| ------------------------- | ------------------------------ |
+| `scripts/RCL-1-SISO.toml` | Index-1 SISO descriptor system |
+| `scripts/RCL-1-MIMO.toml` | Index-1 MIMO descriptor system |
+| `scripts/RCL-2-SISO.toml` | Index-2 SISO descriptor system |
+| `scripts/RCL-2-MIMO.toml` | Index-2 MIMO descriptor system |
+
+Point the `RCL_CONFIG` environment variable to
 the experiment you want to run. Use the `scripts/rcl.jl` script to run an
-experiment.  For example, for `scripts/RCL-2-SISO.toml`,
+experiment.  For example, to run `scripts/RCL-2-SISO.toml`,
 execute the following commands:
 
 ```bash
