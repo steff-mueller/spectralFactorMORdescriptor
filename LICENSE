@@ -28,4 +28,9 @@ originate from
 
     Schwerdtner, P., & Moser, T. (2023). Benchmark Systems for Paper: Optimization-Based Model Order Reduction of Port-Hamiltonian Descriptor Systems [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7636424
 
-and are licensed by CC-BY 4.0.
+and are licensed under CC-BY 4.0.
+
+
+The file
+* src/SpectralFactorMOR/src/lyapunov.jl
+contains code from https://github.com/pymor/pymor which is licensed under BSD-2-clause.
