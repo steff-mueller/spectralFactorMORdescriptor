@@ -24,7 +24,7 @@ experiment_id = "rcl_$(now())"
 results, sys = start_experiment(experiment_id) do
     # Set ENV variable in REPL via:
     #   ENV["RCL_CONFIG"] = "scripts/RCL-2-SISO.toml"
-    f = load_toml_config(get(ENV, "RCL_CONFIG", "scripts/rcl_default.toml"))
+    f = load_toml_config(get(ENV, "RCL_CONFIG", "scripts/RCL-2-MIMO.toml"))
     config = RCLConfiguration(; to_symbol_dict(f["rcl"])...)
     irka_options = IRKAOptions(; to_symbol_dict(f["irka_options"])...)
 

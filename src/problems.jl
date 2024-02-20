@@ -102,7 +102,6 @@ end
 
 function get_problem(name)
     problems = Dict(
-        "RCL-1-SISO-SIMPLE" => () -> setup_DAE1_RCL(500, false, false),
         "RCL-1-SISO" => () -> read_RCL_1_SISO(),
         "RCL-1-MIMO" => () -> setup_DAE1_RCL(500, true, true),
         "RCL-0-SISO" => () -> toindex0(
