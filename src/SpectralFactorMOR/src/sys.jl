@@ -21,14 +21,19 @@ function ispr(sys::AbstractDescriptorStateSpace)
 end
 
 """
-    isastable(sys::AbstractDescriptorStateSpace)
+    isastable(
+        sys::Union{SemiExplicitIndex1DAE, AlmostKroneckerDAE, StaircaseDAE}
+    )
 
-Checks if `sys` is asymptotically stable.
+Checks if `sys` is asymptotically stable, i.e., if all finite eigenvalues
+lie in the open left-half plane.
 """
-function isastable(sys::AbstractDescriptorStateSpace)
-    # TODO add methods for sys::SemiExplicitIndex1DAE and sys::StaircaseDAE
-    sys_poles = filter(s -> !isinf(s), gpole(todss(sys))) # finite eigenvalues
-    return maximum(real((sys_poles))) < 0
+function isastable(
+    sys::Union{SemiExplicitIndex1DAE, AlmostKroneckerDAE, StaircaseDAE}
+)
+    _, syssp, = splitsys(sys)
+    poles = eigvals(syssp.A, syssp.E)
+    return maximum(real((poles))) < 0
 end
 
 """

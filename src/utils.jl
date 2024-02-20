@@ -98,7 +98,7 @@ function plot_tf(experiment_id::String, results::Matrix{Result}, fom)
         display(f)
         save(datadir(experiment_id, "tf_$(name)_$r.png"), f)
 
-        f = sigmaplot(fom-rom, title="$name, r=$r error") # TODO change y axis desc
+        f = sigmaplot(fom-rom, title="$name, r=$r error")
         display(f)
         save(datadir(experiment_id, "tf_$(name)_$(r)_err.png"), f)
     end

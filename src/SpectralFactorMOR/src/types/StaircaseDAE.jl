@@ -89,7 +89,6 @@ function Base.getproperty(sys::StaircaseDAE, sym::Symbol)
     if sym == :P_r
         (; n, n_1, n_2, n_3, n_4) = sys
         _, _, Z_A = tokronecker(sys)
-        # TODO simplify: use explicit formula
         sel = Matrix([spzeros(n_1, n);
                       spzeros(n_2, n_1) I spzeros(n_2, n_3+n_4);
                       spzeros(n_3+n_4, n)])
@@ -97,7 +96,6 @@ function Base.getproperty(sys::StaircaseDAE, sym::Symbol)
     elseif sym == :P_l
         (; n, n_1, n_2, n_3, n_4) = sys
         _, L_A = tokronecker(sys)
-        # TODO simplify: use explicit formula
         sel = Matrix([spzeros(n_1, n);
                       spzeros(n_2, n_1) I spzeros(n_2, n_3+n_4);
                       spzeros(n_3+n_4, n)])
