@@ -59,7 +59,7 @@ Returns a system of type [`AlmostKroneckerDAE`](@ref).
 The result is cached using the
 [Memoize.jl](https://github.com/JuliaCollections/Memoize.jl) package.
 """
-@memoize function tokronecker(sys::StaircaseDAE)
+@memoize function tokronecker(sys::StaircaseDAE{Tv}) where {Tv}
     (; A_11, A_13, A_33, A_31, A_41, A_23, A_21, A_32, A_14, A_12,
        n_1, n_2, n_3, n_4) = sys
 
@@ -68,12 +68,14 @@ The result is cached using the
         spzeros(n_3, n_1) spzeros(n_3, n_2) inv(Matrix(A_33)) -Matrix(A_33)\A_31/Matrix(A_41);
         spzeros(n_4, n_1) spzeros(n_4, n_2) spzeros(n_4, n_3) -inv(Matrix(A_41))]
 
-    dropzeros!(L_A)
+    droptol!(L_A, 2*eps(Tv))
 
     Z_A = [sparse(I, n_1, n_1) spzeros(n_1, n_2) spzeros(n_1, n_3) spzeros(n_1, n_4);
         spzeros(n_2, n_1) sparse(I, n_2, n_2) spzeros(n_2, n_3) spzeros(n_2, n_4);
         spzeros(n_3, n_1) -Matrix(A_33)\A_32 I spzeros(n_3, n_4);
         spzeros(n_4, n_1) Matrix(A_14)\(-A_12 + A_13/Matrix(A_33)*A_32) spzeros(n_4, n_3) inv(Matrix(A_14))]
+
+    droptol!(Z_A, 2*eps(Tv))
 
     return AlmostKroneckerDAE(
         E = L_A*sys.E*Z_A,
