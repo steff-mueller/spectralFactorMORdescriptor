@@ -31,7 +31,7 @@ C = \\begin{bmatrix}
 \\end{bmatrix}.
 ```
 """
-Base.@kwdef struct AlmostKroneckerDAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+Base.@kwdef struct AlmostKroneckerDAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDAE{Tv}
     E::T
     A::T
     B::T

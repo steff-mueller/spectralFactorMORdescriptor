@@ -25,7 +25,7 @@ C = \\begin{bmatrix}
 \\end{bmatrix}.
 ```
 """
-Base.@kwdef struct SemiExplicitIndex1DAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+Base.@kwdef struct SemiExplicitIndex1DAE{Tv, Ti, T <: AbstractMatrix{Tv}} <: AbstractDAE{Tv}
     E::T
     A::T
     B::T

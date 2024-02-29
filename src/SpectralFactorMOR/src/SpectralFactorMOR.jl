@@ -9,7 +9,7 @@ using Memoize
 using DescriptorSystems
 using MatrixEquations
 
-export SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
+export AbstractDAE, UnstructuredDAE, SparseDescriptorStateSpace, SemiExplicitIndex1DAE, StaircaseDAE
 export splitsys, todss, toindex0, tokronecker
 export checkprojlure, is_valid
 export isastable, ispr, h2normsp
@@ -20,7 +20,7 @@ export prbaltrunc
 export sfmor
 
 # parametric-type variant
-abstract type AbstractDescriptorStateSpaceT{Tv} <: AbstractDescriptorStateSpace end
+abstract type AbstractDAE{Tv} <: AbstractDescriptorStateSpace end
 
 include("types/AlmostKroneckerDAE.jl")
 include("types/SemiExplicitIndex1DAE.jl")

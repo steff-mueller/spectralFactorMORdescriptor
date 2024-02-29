@@ -3,7 +3,7 @@ Represents a system without holding any structure information
 (in constract to [`SemiExplicitIndex1DAE`](@ref), [`StaircaseDAE`](@ref)
 and [`AlmostKroneckerDAE`](@ref)).
 """
-struct UnstructuredDAE{Tv, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+struct UnstructuredDAE{Tv, T <: AbstractMatrix{Tv}} <: AbstractDAE{Tv}
     E::T
     A::T
     B::T
@@ -39,7 +39,7 @@ function +(
     return UnstructuredDAE(E, A, B, C, D, 0.0)
 end
 
-function -(sys::AbstractDescriptorStateSpaceT{Tv}) where {Tv}
+function -(sys::AbstractDAE{Tv}) where {Tv}
     (; E, A, B, C, D) = sys
     return UnstructuredDAE(E, A, B, -C, -D, 0.0)
 end
