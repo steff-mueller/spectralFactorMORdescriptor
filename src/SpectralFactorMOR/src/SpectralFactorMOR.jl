@@ -30,7 +30,7 @@ include("irka.jl")
 include("lyapunov.jl")
 include("riccati.jl")
 include("sfmor.jl")
-include("bt.jl")
+include("prbt.jl")
 include("sys.jl")
 
 end # module SpectralFactorMOR

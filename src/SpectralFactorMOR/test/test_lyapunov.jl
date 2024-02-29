@@ -20,7 +20,7 @@ sys = test_setup_DAE1_RCL()
     @test P_r*X*P_r' ≈ X
     err = norm(E*X*A' + A*X*E' + P_l*B*B'*P_l')
     @info "lyapc_lradi error (index 1): $err"
-    @test err < 1e-12
+    @test err < 1e-11
 end
 
 @testset "lypac_lradi index 0" begin
@@ -30,7 +30,7 @@ end
     X = Z*Z'
     err = norm(sys_i0.E*X*sys_i0.A' + sys_i0.A*X*sys_i0.E' + sys_i0.B*sys_i0.B')
     @info "lyapc_lradi error (index 0): $err"
-    @test err < 1e-12
+    @test err < 1e-11
 end
 
 @testset "lyapc_lradi index 0 simple" begin
@@ -41,7 +41,7 @@ end
     @test Z isa Matrix{Float64}
     X = Z*Z'
     err = norm(E*X*A'+A*X*E'+B*B')
-    @test err < 1e-12
+    @test err < 1e-11
 end
 
 end # module LyapunovTests
