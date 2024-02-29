@@ -1,25 +1,19 @@
-function lure_cholesky(sys, X, method; compute_factors_tol=1e-12)
+function lure_cholesky(sys, X; compute_factors_tol=1e-12)
     (; A, E, B, C, M_0, P_r, n) = sys
-    @assert method in (:together, :firstm)
-    if method == :together
-        W = Matrix([
-            -A'*X*E-E'*X*A P_r'*C'-E'*X*B;
-            C*P_r-B'*X*E M_0+M_0'
-        ])
-        K = lrcf(W, compute_factors_tol)
-        L = K[:,1:n]
-        M = K[:,n+1:end]
-    elseif method == :firstm # valid if X is solution of Riccati eq.
-        M = cholesky(Symmetric(M_0+M_0')).U
-        L = M'\(C*P_r-B'*X*E)
-    end
+    W = Matrix([
+        -A'*X*E-E'*X*A P_r'*C'-E'*X*B;
+        C*P_r-B'*X*E M_0+M_0'
+    ])
+    K = lrcf(W, compute_factors_tol)
+    L = K[:,1:n]
+    M = K[:,n+1:end]
     return L, M
 end
 
 """
     sfmor(
         sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions;
-        X=nothing, compute_factors = :together, compute_factors_tol=1e-12
+        X=nothing, compute_factors_tol=1e-12
     )
 
 Executes the spectral factor MOR method for a semi-explicit index-1 system.
@@ -30,13 +24,13 @@ the positive real observability Gramian is computed
 using [`pr_o_gramian`](@ref).
 """
 function sfmor(sys::SemiExplicitIndex1DAE, r, irka_options::IRKAOptions;
-    X=nothing, compute_factors = :together, compute_factors_tol=1e-12
+    X=nothing, compute_factors_tol=1e-12
 )
     (; A, E, B, n_1, M_0) = sys
     if isnothing(X)
         X = pr_o_gramian(sys)
     end
-    L, M = lure_cholesky(sys, X, compute_factors; compute_factors_tol)
+    L, M = lure_cholesky(sys, X; compute_factors_tol)
 
     Σ_H = SemiExplicitIndex1DAE(E, A, B, sparse(L), Matrix(M), n_1)
 
@@ -54,7 +48,7 @@ end
 """
     sfmor(
         sys::StaircaseDAE, r, irka_options::IRKAOptions;
-        X = nothing, compute_factors = :together, compute_factors_tol=1e-12
+        X = nothing, compute_factors_tol=1e-12
     )
 
 Executes the spectral factor MOR method for a system in staircase form.
@@ -65,12 +59,12 @@ the positive real observability Gramian is computed
 using [`pr_o_gramian`](@ref).
 """
 function sfmor(sys::StaircaseDAE, r, irka_options::IRKAOptions;
-    X = nothing, compute_factors = :together, compute_factors_tol=1e-12
+    X = nothing, compute_factors_tol=1e-12
 )
     if isnothing(X)
         X = pr_o_gramian(sys)
     end
-    L, M = lure_cholesky(sys, X, compute_factors; compute_factors_tol)
+    L, M = lure_cholesky(sys, X; compute_factors_tol)
 
     (; E, A, B, M_0, M_1, P_r, P_l, n_1, n_2, n_3, n_4, m) = sys
     Σ_H = StaircaseDAE(
