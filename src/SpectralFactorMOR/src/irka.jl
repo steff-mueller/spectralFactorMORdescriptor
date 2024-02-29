@@ -155,6 +155,11 @@ function irka(
        randomize_s_init, randomize_s_var,
        cycle_detection_length, cycle_detection_tol) = irka_options
     (; A, E, B, C, D) = sys
+    if isnothing(Dr)
+        Dr = D
+    end
+    DreqD = Dr==D
+
     c = size(sys.D,1)==1 ? ones(1,r) : randn(size(D,1),r)
     b = size(sys.D,2)==1 ? ones(1,r) : randn(size(D,2),r)
     sexp = range(s_init_start, stop=s_init_stop, length=r)
@@ -165,7 +170,7 @@ function irka(
     s = (10+0*im) .^ sexp
     s_history = [s]
 
-    Er,Ar,Br,Cr = isnothing(Dr) ?
+    Er,Ar,Br,Cr = DreqD ?
         i0interpolate(E,A,B,C,c,b,s; P_r = P_r, P_l = P_l) :
         i1interpolate(E,A,B,C,D,Dr,c,b,s; P_r = P_r, P_l = P_l)
 
@@ -185,7 +190,7 @@ function irka(
         cycle_crit, cycle_index = compute_cycle_crit(s, s_history)
         update_s_history!(s, s_history, cycle_detection_length)
 
-        Er,Ar,Br,Cr = isnothing(Dr) ?
+        Er,Ar,Br,Cr = DreqD ?
             i0interpolate(E,A,B,C,c,b,s; P_r = P_r, P_l = P_l) :
             i1interpolate(E,A,B,C,D,Dr,c,b,s; P_r = P_r, P_l = P_l)
 
@@ -201,7 +206,7 @@ function irka(
     converged = conv_crit < conv_tol
     @info "IRKA iterations" iter converged conv_crit
 
-    rom = UnstructuredDAE(Er, Ar, Br, Cr, isnothing(Dr) ? D : Dr)
+    rom = UnstructuredDAE(Er, Ar, Br, Cr, Dr)
     return rom, IRKAResult(
         iter, converged, conv_crit,
         cycle_detected, cycle_crit, s, c, b
