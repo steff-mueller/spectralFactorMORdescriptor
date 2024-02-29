@@ -85,7 +85,7 @@ function sfmor(sys::StaircaseDAE, r, irka_options::IRKAOptions;
     Er_f = romf_H.E; Ar_f = romf_H.A; Br_f = romf_H.B; Lr_f = romf_H.C
     Xr_f = lyapc(Ar_f', Er_f', Lr_f'*Lr_f)
     Cr_f = Br_f'*Xr_f*Er_f + M'*Lr_f
-    romp = GenericDescriptorStateSpace(Er_f, Ar_f, Br_f, Cr_f, M_0)
+    romp = UnstructuredDAE(Er_f, Ar_f, Br_f, Cr_f, M_0)
 
     # TODO Generalize construction of ROM if rank(Z) > 1
     Z = lrcf(M_1, 10*eps(Float64)) # M_1 = Z'*Z

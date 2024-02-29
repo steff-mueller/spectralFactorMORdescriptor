@@ -201,7 +201,7 @@ function irka(
     converged = conv_crit < conv_tol
     @info "IRKA iterations" iter converged conv_crit
 
-    rom = GenericDescriptorStateSpace(Er, Ar, Br, Cr, isnothing(Dr) ? D : Dr)
+    rom = UnstructuredDAE(Er, Ar, Br, Cr, isnothing(Dr) ? D : Dr)
     return rom, IRKAResult(
         iter, converged, conv_crit,
         cycle_detected, cycle_crit, s, c, b

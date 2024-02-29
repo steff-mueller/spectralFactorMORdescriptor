@@ -1,4 +1,9 @@
-struct GenericDescriptorStateSpace{Tv, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
+"""
+Represents a system without holding any structure information
+(in constract to [`SemiExplicitIndex1DAE`](@ref), [`StaircaseDAE`](@ref)
+and [`AlmostKroneckerDAE`](@ref)).
+"""
+struct UnstructuredDAE{Tv, T <: AbstractMatrix{Tv}} <: AbstractDescriptorStateSpaceT{Tv}
     E::T
     A::T
     B::T
@@ -7,14 +12,14 @@ struct GenericDescriptorStateSpace{Tv, T <: AbstractMatrix{Tv}} <: AbstractDescr
     Ts::Float64
 end
 
-function GenericDescriptorStateSpace(
+function UnstructuredDAE(
     E::T,
     A::T,
     B::T,
     C::T,
     D::Matrix{Tv}
 ) where {Tv, T <: AbstractMatrix{Tv}}
-    GenericDescriptorStateSpace(E, A, B, C, D, 0.0)
+    UnstructuredDAE(E, A, B, C, D, 0.0)
 end
 
 function +(
@@ -31,12 +36,12 @@ function +(
     B = [sys1.B ; sys2.B]
     C = [sys1.C sys2.C;]
     D = [sys1.D + sys2.D;]
-    return GenericDescriptorStateSpace(E, A, B, C, D, 0.0)
+    return UnstructuredDAE(E, A, B, C, D, 0.0)
 end
 
 function -(sys::AbstractDescriptorStateSpaceT{Tv}) where {Tv}
     (; E, A, B, C, D) = sys
-    return GenericDescriptorStateSpace(E, A, B, -C, -D, 0.0)
+    return UnstructuredDAE(E, A, B, -C, -D, 0.0)
 end
 
 function -(

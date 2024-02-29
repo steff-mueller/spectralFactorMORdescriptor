@@ -24,7 +24,7 @@ abstract type AbstractDescriptorStateSpaceT{Tv} <: AbstractDescriptorStateSpace 
 
 include("types/AlmostKroneckerDAE.jl")
 include("types/SemiExplicitIndex1DAE.jl")
-include("types/GenericDescriptorStateSpace.jl")
+include("types/UnstructuredDAE.jl")
 include("types/StaircaseDAE.jl")
 include("irka.jl")
 include("lyapunov.jl")
