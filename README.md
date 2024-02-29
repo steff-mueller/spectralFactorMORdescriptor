@@ -1,6 +1,7 @@
 # Passivity-preserving model reduction for descriptor systems via spectral factorization
 
 [![CI][ci-shield]][ci-url]
+[![codecov.io][codecov-shield]][codecov-url]
 [![Docs][docs-shield]][docs-url]
 [![MIT License][license-shield]][license-url]
 
@@ -70,6 +71,8 @@ Benjamin Unger - benjamin.unger@simtech.uni-stuttgart.de
 [arxiv-url]: TODO
 [ci-shield]: https://github.com/steff-mueller/spectralFactorMORdescriptor/workflows/CI/badge.svg
 [ci-url]: https://github.com/steff-mueller/spectralFactorMORdescriptor/actions
+[codecov-shield]: https://codecov.io/gh/steff-mueller/spectralFactorMORdescriptor/graph/badge.svg?token=29D7ADLFAS
+[codecov-url]: https://codecov.io/gh/steff-mueller/spectralFactorMORdescriptor
 [docs-shield]: https://img.shields.io/badge/docs-online-blue.svg
 [docs-url]: https://steff-mueller.github.io/spectralFactorMORdescriptor/
 [docs-url-pkg]: https://steff-mueller.github.io/spectralFactorMORdescriptor/SpectralFactorMOR
