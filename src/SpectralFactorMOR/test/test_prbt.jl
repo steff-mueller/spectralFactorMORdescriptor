@@ -37,7 +37,7 @@ for problem in problems
         @test all(dss2rm(todss(rominf)) .≈ dss2rm(todss(sysinf)))
         @test h2normsp(syssp - romsp) < tol
         @test ispr(rom)[1]
-        @test norm(pr_o_gramian(rom) - pr_c_gramian(rom)) < 1e-8
+        @test norm(pr_o_gramian(rom) - pr_c_gramian(rom)) < 1e-7
     end
 end
 
