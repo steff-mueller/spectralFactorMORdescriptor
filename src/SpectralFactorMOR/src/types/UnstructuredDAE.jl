@@ -23,8 +23,8 @@ function UnstructuredDAE(
 end
 
 function +(
-    sys1::AbstractDescriptorStateSpaceT{Tv1},
-    sys2::AbstractDescriptorStateSpaceT{Tv2}
+    sys1::AbstractDAE{Tv1},
+    sys2::AbstractDAE{Tv2}
 ) where {Tv1,Tv2}
     T = promote_type(Tv1, Tv2)
     n1 = size(sys1.A, 1)
@@ -45,8 +45,8 @@ function -(sys::AbstractDAE{Tv}) where {Tv}
 end
 
 function -(
-    sys1::AbstractDescriptorStateSpaceT{Tv1},
-    sys2::AbstractDescriptorStateSpaceT{Tv2}
+    sys1::AbstractDAE{Tv1},
+    sys2::AbstractDAE{Tv2}
 ) where {Tv1,Tv2}
     return sys1 + (-sys2)
 end
