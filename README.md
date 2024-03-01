@@ -76,5 +76,5 @@ Benjamin Unger - benjamin.unger@simtech.uni-stuttgart.de
 [docs-shield]: https://img.shields.io/badge/docs-online-blue.svg
 [docs-url]: https://steff-mueller.github.io/spectralFactorMORdescriptor/
 [docs-url-pkg]: https://steff-mueller.github.io/spectralFactorMORdescriptor/SpectralFactorMOR
-[license-shield]: https://img.shields.io/github/license/steff-mueller/spectralFactorMORdescriptor.svg
+[license-shield]: https://img.shields.io/badge/License-MIT-brightgreen.svg
 [license-url]: https://github.com/steff-mueller/spectralFactorMORdescriptor/blob/main/LICENSE
